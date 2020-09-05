@@ -1,39 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:grocskart/Customer/CRegisterScreen.dart';
+import 'package:grocskart/WelcomeScreen.dart';
+import 'Customer/CloginScreen.dart';
 
 void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                width: double.infinity,
-              ),
-              Container(
-                width: 150.0,
-                height: 150.0,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage('images/logo_eps.png'),
-                      fit: BoxFit.fill),
-                ),
-              ),
-              Text("hello"),
-              Text("how are you"),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  runApp(
+    MaterialApp(
+      initialRoute: WelcomeScreen.id,
+      routes: {
+        WelcomeScreen.id: (context) => WelcomeScreen(),
+        CloginScreen.id: (context) => CloginScreen(),
+        CRegisterScreen.id: (context) => CRegisterScreen(),
+      },
+    ),
+  );
 }
