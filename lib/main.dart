@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Text("hello"),
+              Text("how are you"),
             ],
           ),
         ),
