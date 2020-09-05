@@ -11,7 +11,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         body: SafeArea(
-          
           child: Column(
             children: <Widget>[
               Text("hello"),
