@@ -12,7 +12,22 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         body: SafeArea(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              SizedBox(
+                width: double.infinity,
+              ),
+              Container(
+                width: 150.0,
+                height: 150.0,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('images/logo_eps.png'),
+                      fit: BoxFit.fill),
+                ),
+              ),
               Text("hello"),
               Text("how are you"),
             ],
