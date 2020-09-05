@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:grocskart/constants.dart';
 
 class cButton extends StatelessWidget {
-  cButton({this.text, this.onPressed});
+  cButton({this.text, this.onPressed, this.color = kcyan});
 
   final String text;
   final Function onPressed;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +14,7 @@ class cButton extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
       child: Material(
         elevation: 5.0,
-        color: Color(0xff005249),
+        color: color,
         borderRadius: BorderRadius.circular(25),
         child: MaterialButton(
           onPressed: onPressed,

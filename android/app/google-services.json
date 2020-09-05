@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "347449902773",
+    "firebase_url": "https://grocskart-e99b7.firebaseio.com",
+    "project_id": "grocskart-e99b7",
+    "storage_bucket": "grocskart-e99b7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:347449902773:android:b17616e9b423d248c460fc",
+        "android_client_info": {
+          "package_name": "com.grocskart.grocskart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "347449902773-ci1q29nmgmhlrllf8toa3tvic759nfq7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUI-D8RwhsudBBDAhYiXMwBMdUnnYBv9k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "347449902773-ci1q29nmgmhlrllf8toa3tvic759nfq7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

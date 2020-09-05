@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:grocskart/CustomUI/Cbutton.dart';
-import 'package:grocskart/Customer/CRegisterScreen.dart';
 import 'package:grocskart/constants.dart';
+import 'package:grocskart/CustomUI/Cbutton.dart';
 import 'package:grocskart/CustomUI/CinputBox.dart';
+import 'SloginScreen.dart';
 
-class CloginScreen extends StatefulWidget {
-  static final String id = "FrontPage";
-  // This widget is the root of your application.
+class SRegisterScreen extends StatefulWidget {
+  static final String id = "SRegisterScreen";
   @override
-  _CloginScreenState createState() => _CloginScreenState();
+  _SRegisterScreenState createState() => _SRegisterScreenState();
 }
 
-class _CloginScreenState extends State<CloginScreen> {
-  bool boxValue = false;
-
+class _SRegisterScreenState extends State<SRegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,19 +34,9 @@ class _CloginScreenState extends State<CloginScreen> {
                     image: AssetImage('images/logo_eps.png'), fit: BoxFit.fill),
               ),
             ), //logo
-            Text(
-              "Customer Account",
-              style: TextStyle(
-                fontFamily: "BalsamiqSans",
-                fontSize: 22,
-                color: kdark,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 2,
-              ),
-            ),
             Card(
               color: Color(0xffeef4cd),
-              margin: EdgeInsets.only(left: 30, right: 30, top: 0, bottom: 10),
+              margin: EdgeInsets.only(left: 30, right: 30, top: 20, bottom: 10),
               elevation: 10,
               child: Container(
                 padding:
@@ -69,47 +56,13 @@ class _CloginScreenState extends State<CloginScreen> {
                     SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Checkbox(
-                              value: boxValue,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  boxValue = newValue;
-                                });
-                              },
-                            ),
-                            Text(
-                              "Remember me",
-                              style: TextStyle(
-                                fontFamily: "BalsamiqSans",
-                                color: kdark,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          "forgot password?",
-                          style: TextStyle(
-                            fontFamily: "BalsamiqSans",
-                            fontSize: 15,
-                            fontStyle: FontStyle.italic,
-                            color: kcyan,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ],
-                    ),
                   ],
                 ),
               ),
             ),
 
             cButton(
-              text: "LOGIN",
+              text: "SIGN UP",
               onPressed: () {},
             ),
 
@@ -120,7 +73,7 @@ class _CloginScreenState extends State<CloginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  "Don't Have an account?",
+                  "Already Have an account?",
                   style: TextStyle(
                     fontFamily: "BalsamiqSans",
                     fontSize: 15,
@@ -133,10 +86,10 @@ class _CloginScreenState extends State<CloginScreen> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, CRegisterScreen.id);
+                    Navigator.pushNamed(context, SloginScreen.id);
                   },
                   child: Text(
-                    "Sign Up",
+                    "Sign In",
                     style: TextStyle(
                       fontFamily: "BalsamiqSans",
                       fontSize: 18,

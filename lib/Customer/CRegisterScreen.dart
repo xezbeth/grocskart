@@ -44,10 +44,9 @@ class _CRegisterScreenState extends State<CRegisterScreen> {
                 child: Column(
                   children: <Widget>[
                     Ctextfield(
-                      hint: "Phone No",
+                      hint: "Email",
                       onChanged: null,
                       isPassword: false,
-                      keyboardType: TextInputType.number,
                     ),
                     Ctextfield(
                       hint: "password",

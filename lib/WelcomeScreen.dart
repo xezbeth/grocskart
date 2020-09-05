@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:grocskart/Customer/CloginScreen.dart';
 import 'constants.dart';
 import 'package:grocskart/CustomUI/Cbutton.dart';
+import 'Seller/SloginScreen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   static final String id = "WelcomeScreen";
@@ -26,7 +28,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
             ), //logo
             SizedBox(
-              height: 100,
+              height: 50,
             ),
             Text(
               "Hello,Welcome to Grocskart",
@@ -39,7 +41,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 20,
+              height: 50,
             ),
             Text(
               "Are you looking to ...",
@@ -52,7 +54,7 @@ class WelcomeScreen extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 100,
+              height: 30,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -60,13 +62,19 @@ class WelcomeScreen extends StatelessWidget {
                 Expanded(
                   child: cButton(
                     text: "BUY",
-                    onPressed: () {},
+                    color: Colors.green,
+                    onPressed: () {
+                      Navigator.pushNamed(context, CloginScreen.id);
+                    },
                   ),
                 ),
                 Expanded(
                   child: cButton(
                     text: "SELL",
-                    onPressed: () {},
+                    color: Colors.red,
+                    onPressed: () {
+                      Navigator.pushNamed(context, SloginScreen.id);
+                    },
                   ),
                 ),
               ],

@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:grocskart/CustomUI/Cbutton.dart';
-import 'package:grocskart/Customer/CRegisterScreen.dart';
 import 'package:grocskart/constants.dart';
+import 'package:grocskart/CustomUI/Cbutton.dart';
 import 'package:grocskart/CustomUI/CinputBox.dart';
+import 'SRegisterScreen.dart';
 
-class CloginScreen extends StatefulWidget {
-  static final String id = "FrontPage";
-  // This widget is the root of your application.
+class SloginScreen extends StatefulWidget {
+  static final String id = "SloginScreen";
   @override
-  _CloginScreenState createState() => _CloginScreenState();
+  _SloginScreenState createState() => _SloginScreenState();
 }
 
-class _CloginScreenState extends State<CloginScreen> {
+class _SloginScreenState extends State<SloginScreen> {
   bool boxValue = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,7 +36,7 @@ class _CloginScreenState extends State<CloginScreen> {
               ),
             ), //logo
             Text(
-              "Customer Account",
+              "Seller Account",
               style: TextStyle(
                 fontFamily: "BalsamiqSans",
                 fontSize: 22,
@@ -133,7 +131,7 @@ class _CloginScreenState extends State<CloginScreen> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, CRegisterScreen.id);
+                    Navigator.pushNamed(context, SRegisterScreen.id);
                   },
                   child: Text(
                     "Sign Up",
