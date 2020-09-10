@@ -34,3 +34,30 @@ class cButton extends StatelessWidget {
     );
   }
 }
+
+class cRoundIconButton extends StatelessWidget {
+  cRoundIconButton({this.icon, this.onpress});
+
+  final IconData icon;
+  final Function onpress;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+      child: RawMaterialButton(
+        child: Icon(
+          icon,
+          size: 40,
+        ),
+        onPressed: onpress,
+        elevation: 6,
+        constraints: BoxConstraints.tightFor(
+          width: 45,
+          height: 45,
+        ),
+        shape: CircleBorder(),
+        fillColor: Color(0xFF4C4F5E),
+      ),
+    );
+  }
+}

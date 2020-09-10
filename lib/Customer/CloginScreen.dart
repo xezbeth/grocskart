@@ -3,6 +3,7 @@ import 'package:grocskart/CustomUI/Cbutton.dart';
 import 'package:grocskart/Customer/CRegisterScreen.dart';
 import 'package:grocskart/constants.dart';
 import 'package:grocskart/CustomUI/CinputBox.dart';
+import 'CNavigationScreen.dart';
 
 class CloginScreen extends StatefulWidget {
   static final String id = "FrontPage";
@@ -110,7 +111,9 @@ class _CloginScreenState extends State<CloginScreen> {
 
             cButton(
               text: "LOGIN",
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, CNavigationScreen.id);
+              },
             ),
 
             SizedBox(
