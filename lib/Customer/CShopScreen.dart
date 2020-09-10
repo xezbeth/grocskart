@@ -4,6 +4,7 @@ import 'package:grocskart/CustomUI/ItemList.dart';
 import 'package:grocskart/CustomUI/SearchBar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:grocskart/Customer/ItemFocusScreen.dart';
 
 class CShopScreen extends StatefulWidget {
   @override
@@ -15,10 +16,11 @@ class _CShopScreenState extends State<CShopScreen> {
 
   Future shopFuture;
 
-  String image, name;
-  int price, discount;
-  double distance;
+  //String image, name;
+  //int price, discount;
+  //double distance;
   List<Widget> listshopitem = [];
+  var im;
 
   @override
   void initState() {
@@ -28,14 +30,15 @@ class _CShopScreenState extends State<CShopScreen> {
   }
 
   Future getShopItem() async {
-    var im;
     //listshopitem = [];
     final message = await firestore.collection('shop').get();
     for (var attribute in message.docs) {
       im = await FirebaseStorage.instance
           .ref()
-          .child('shop1/1.jpg')
+          .child('shop1/${attribute.data()["image"]}.jpg')
           .getDownloadURL();
+
+      String image = im;
       listshopitem.add(
         ItemList(
           image: im,
@@ -43,6 +46,16 @@ class _CShopScreenState extends State<CShopScreen> {
           discount: attribute.data()["discount"],
           distance: attribute.data()["distance"].toDouble(),
           price: attribute.data()["price"],
+          onPressed: () {
+            Navigator.pushNamed(context, ItemFocusScreen.id, arguments: {
+              'image': image,
+              'name': attribute.data()["name"],
+              'price': attribute.data()["price"],
+              'distance': attribute.data()["distance"].toDouble(),
+              'discount': attribute.data()["discount"],
+              'desc': attribute.data()["desc"]
+            });
+          },
         ),
       );
     }

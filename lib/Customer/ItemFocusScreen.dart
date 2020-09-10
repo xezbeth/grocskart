@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grocskart/CustomUI/Cbutton.dart';
@@ -5,6 +7,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ItemFocusScreen extends StatefulWidget {
   static final String id = "ItemFocusScreen";
+
+  String image, name, desc;
+  int price, discount;
+  double distance;
+
   @override
   _ItemFocusSceenState createState() => _ItemFocusSceenState();
 }
@@ -14,6 +21,17 @@ class _ItemFocusSceenState extends State<ItemFocusScreen> {
   double _quantityinKG = 0.5;
   @override
   Widget build(BuildContext context) {
+    final Map arguments = ModalRoute.of(context).settings.arguments as Map;
+
+    if (arguments != null) {
+      widget.image = arguments['image'];
+      widget.name = arguments['name'];
+      widget.desc = arguments['desc'];
+      widget.price = arguments['price'];
+      widget.discount = arguments['discount'];
+      widget.distance = arguments['distance'];
+    }
+
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -24,28 +42,28 @@ class _ItemFocusSceenState extends State<ItemFocusScreen> {
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 5),
-                child: Image.asset(
-                  "images/logo_eps.png",
+                child: Image.network(
+                  widget.image,
                   height: 250,
                   width: double.infinity,
                 ),
               ),
               Text(
-                "Sugar",
+                widget.name,
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
-                "₹ 300",
+                "₹ ${widget.price}",
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
-                "This is the small description of sugar",
+                widget.desc,
                 style: TextStyle(
                   fontSize: 18,
                 ),

@@ -2,20 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:grocskart/Customer/ItemFocusScreen.dart';
 
 class ItemList extends StatelessWidget {
-  ItemList({this.image, this.name, this.distance, this.discount, this.price});
+  ItemList(
+      {this.image,
+      this.name,
+      this.distance,
+      this.discount,
+      this.price,
+      this.onPressed});
 
   final String image, name;
   final int price, discount;
   final double distance;
+  final Function onPressed;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, ItemFocusScreen.id);
-      },
+      onTap: onPressed,
       child: Card(
-        margin: EdgeInsets.all(15),
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         elevation: 8,
         child: Row(
           children: <Widget>[
