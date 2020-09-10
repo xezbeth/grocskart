@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grocskart/CustomUI/ItemList.dart';
@@ -15,47 +13,44 @@ class CShopScreen extends StatefulWidget {
 class _CShopScreenState extends State<CShopScreen> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  Future shopFuture;
+
   String image, name;
   int price, discount;
   double distance;
-  List<Widget> listshopitem = [
-    ItemList(
-      image: "grocskart-e99b7.appspot.com/1.jpg",
-      name: "as",
-      discount: 4,
-      distance: 3,
-      price: 500,
-    ),
-  ];
+  List<Widget> listshopitem = [];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    //getShopItem();
+    shopFuture = getShopItem();
   }
 
-  void getShopItem() async {
+  Future getShopItem() async {
+    var im;
+    //listshopitem = [];
     final message = await firestore.collection('shop').get();
     for (var attribute in message.docs) {
+      im = await FirebaseStorage.instance
+          .ref()
+          .child('shop1/1.jpg')
+          .getDownloadURL();
       listshopitem.add(
         ItemList(
-          image:
-              await FirebaseStorage.instance.ref().child('1').getDownloadURL(),
+          image: im,
           name: attribute.data()["name"],
           discount: attribute.data()["discount"],
-          distance: attribute.data()["distance"],
+          distance: attribute.data()["distance"].toDouble(),
           price: attribute.data()["price"],
         ),
       );
-      //print(m.data());
     }
-    print(listshopitem);
+    return listshopitem;
   }
 
   @override
   Widget build(BuildContext context) {
-    getShopItem();
     return Container(
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
@@ -78,7 +73,11 @@ class _CShopScreenState extends State<CShopScreen> {
                           padding: EdgeInsets.only(right: 5),
                           iconSize: 40,
                           icon: Icon(Icons.search),
-                          onPressed: () {}),
+                          onPressed: () {
+                            print(listshopitem.length);
+                            shopFuture = getShopItem();
+                            setState(() {});
+                          }),
                     ),
                   ],
                 ),
@@ -98,10 +97,30 @@ class _CShopScreenState extends State<CShopScreen> {
                 ),
               ),
               Expanded(
-                child: ListView(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  children: listshopitem,
+                child: FutureBuilder(
+                  future: shopFuture,
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
+                        return Text("NONE");
+                        break;
+                      case ConnectionState.active:
+                        return Text("ACTIVE");
+                        break;
+                      case ConnectionState.waiting:
+                        return Text("WAITING");
+                        break;
+                      case ConnectionState.done:
+                        return ListView(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          children: listshopitem,
+                        );
+                        break;
+                      default:
+                        return Text("DEFAULT");
+                    }
+                  },
                 ),
               ),
             ],
