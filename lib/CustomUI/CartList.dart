@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:grocskart/Customer/ItemFocusScreen.dart';
 
 class CartList extends StatelessWidget {
+  CartList({this.image, this.price, this.name});
+
+  final String image, name;
+  final int price;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -9,7 +14,7 @@ class CartList extends StatelessWidget {
         Navigator.pushNamed(context, ItemFocusScreen.id);
       },
       child: Card(
-        margin: EdgeInsets.all(15),
+        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         elevation: 8,
         child: Row(
           children: <Widget>[
@@ -17,7 +22,7 @@ class CartList extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Image(
-                  image: AssetImage("images/logo_eps.png"),
+                  image: NetworkImage(image),
                 ),
               ),
             ),
@@ -30,7 +35,7 @@ class CartList extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      "Sugar",
+                      name,
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -40,7 +45,7 @@ class CartList extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      "₹ 300",
+                      "₹ $price",
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,

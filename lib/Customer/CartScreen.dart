@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:grocskart/CustomUI/Cbutton.dart';
 import 'package:grocskart/CustomUI/CartList.dart';
+import 'package:grocskart/utils/database_helper.dart';
+import 'CartTracker.dart';
 
 class CartScreen extends StatefulWidget {
   @override
@@ -8,8 +10,29 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  List<Widget> cartList = [];
+  Future cartFuture;
+  DatabaseHelper databaseHelper = DatabaseHelper();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    cartFuture = getCartList();
+  }
+
+  Future getCartList() async {
+    databaseHelper.initializeDatabase();
+    List<Map> result = await databaseHelper.getCartMapList();
+    for (var r in result) {
+      cartList
+          .add(CartList(image: r['image'], name: r['name'], price: r['price']));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    getCartList();
     return Container(
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
@@ -18,17 +41,30 @@ class _CartScreenState extends State<CartScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Expanded(
-                child: ListView(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: true,
-                  children: <Widget>[
-                    CartList(),
-                    CartList(),
-                    CartList(),
-                    CartList(),
-                    CartList(),
-                    CartList(),
-                  ],
+                child: FutureBuilder(
+                  future: cartFuture,
+                  builder: (context, snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.none:
+                        return Text("NONE");
+                        break;
+                      case ConnectionState.active:
+                        return Text("ACTIVE");
+                        break;
+                      case ConnectionState.waiting:
+                        return Text("WAITING");
+                        break;
+                      case ConnectionState.done:
+                        return ListView(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          children: cartList,
+                        );
+                        break;
+                      default:
+                        return Text("DEFAULT");
+                    }
+                  },
                 ),
               ),
               Container(

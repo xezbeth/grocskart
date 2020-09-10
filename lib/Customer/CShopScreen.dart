@@ -16,7 +16,7 @@ class _CShopScreenState extends State<CShopScreen> {
 
   Future shopFuture;
 
-  //String image, name;
+  String keyword;
   //int price, discount;
   //double distance;
   List<Widget> listshopitem = [];
@@ -26,11 +26,11 @@ class _CShopScreenState extends State<CShopScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    shopFuture = getShopItem();
+    shopFuture = getShopItem(null);
   }
 
-  Future getShopItem() async {
-    //listshopitem = [];
+  Future getShopItem(String searchKeyWord) async {
+    listshopitem = [];
     final message = await firestore.collection('shop').get();
     for (var attribute in message.docs) {
       im = await FirebaseStorage.instance
@@ -39,10 +39,20 @@ class _CShopScreenState extends State<CShopScreen> {
           .getDownloadURL();
 
       String image = im;
+      String name;
+      if (searchKeyWord == null) {
+        name = attribute.data()["name"];
+      } else {
+        if (attribute.data()["name"] == searchKeyWord) {
+          name = attribute.data()["name"];
+        } else {
+          continue;
+        }
+      }
       listshopitem.add(
         ItemList(
           image: im,
-          name: attribute.data()["name"],
+          name: name,
           discount: attribute.data()["discount"],
           distance: attribute.data()["distance"].toDouble(),
           price: attribute.data()["price"],
@@ -53,7 +63,9 @@ class _CShopScreenState extends State<CShopScreen> {
               'price': attribute.data()["price"],
               'distance': attribute.data()["distance"].toDouble(),
               'discount': attribute.data()["discount"],
-              'desc': attribute.data()["desc"]
+              'desc': attribute.data()["desc"],
+              'id': attribute.data()["id"],
+              'quantity': attribute.data()["quantity"]
             });
           },
         ),
@@ -77,7 +89,9 @@ class _CShopScreenState extends State<CShopScreen> {
                       flex: 5,
                       child: cSearchBar(
                         hint: "Search",
-                        onChanged: null,
+                        onChanged: (value) {
+                          keyword = value;
+                        },
                         isPassword: false,
                       ),
                     ),
@@ -87,8 +101,7 @@ class _CShopScreenState extends State<CShopScreen> {
                           iconSize: 40,
                           icon: Icon(Icons.search),
                           onPressed: () {
-                            print(listshopitem.length);
-                            shopFuture = getShopItem();
+                            shopFuture = getShopItem(keyword);
                             setState(() {});
                           }),
                     ),
@@ -104,7 +117,9 @@ class _CShopScreenState extends State<CShopScreen> {
                           padding: EdgeInsets.only(right: 5),
                           iconSize: 40,
                           icon: Icon(Icons.filter_list),
-                          onPressed: () {}),
+                          onPressed: () {
+                            print(listshopitem.length);
+                          }),
                     ),
                   ],
                 ),

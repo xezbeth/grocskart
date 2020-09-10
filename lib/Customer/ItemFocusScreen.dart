@@ -1,15 +1,14 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grocskart/CustomUI/Cbutton.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:grocskart/utils/database_helper.dart';
+import 'package:grocskart/Customer/CartTracker.dart';
 
 class ItemFocusScreen extends StatefulWidget {
   static final String id = "ItemFocusScreen";
 
   String image, name, desc;
-  int price, discount;
+  int price, discount, pid, quantity;
   double distance;
 
   @override
@@ -21,6 +20,8 @@ class _ItemFocusSceenState extends State<ItemFocusScreen> {
   double _quantityinKG = 0.5;
   @override
   Widget build(BuildContext context) {
+    DatabaseHelper databaseHelper = DatabaseHelper();
+
     final Map arguments = ModalRoute.of(context).settings.arguments as Map;
 
     if (arguments != null) {
@@ -30,6 +31,8 @@ class _ItemFocusSceenState extends State<ItemFocusScreen> {
       widget.price = arguments['price'];
       widget.discount = arguments['discount'];
       widget.distance = arguments['distance'];
+      widget.pid = arguments['id'];
+      widget.quantity = arguments['quantity'];
     }
 
     return Scaffold(
@@ -159,7 +162,18 @@ class _ItemFocusSceenState extends State<ItemFocusScreen> {
               ),
               cButton(
                 text: "Add to Cart",
-                onPressed: () {},
+                onPressed: () {
+                  CartTraker item = CartTraker(
+                      id: widget.pid,
+                      image: widget.image,
+                      name: widget.name,
+                      desc: widget.desc,
+                      quantity: widget.quantity,
+                      price: widget.price);
+                  databaseHelper.initializeDatabase();
+                  //databaseHelper.insertToCart(item);
+                  print(databaseHelper.insertToCart(item));
+                },
               ),
             ],
           ),
