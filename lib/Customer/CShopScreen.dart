@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:grocskart/CustomUI/ItemList.dart';
 import 'package:grocskart/CustomUI/SearchBar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class CShopScreen extends StatefulWidget {
   @override
@@ -10,8 +13,49 @@ class CShopScreen extends StatefulWidget {
 }
 
 class _CShopScreenState extends State<CShopScreen> {
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  String image, name;
+  int price, discount;
+  double distance;
+  List<Widget> listshopitem = [
+    ItemList(
+      image: "grocskart-e99b7.appspot.com/1.jpg",
+      name: "as",
+      discount: 4,
+      distance: 3,
+      price: 500,
+    ),
+  ];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //getShopItem();
+  }
+
+  void getShopItem() async {
+    final message = await firestore.collection('shop').get();
+    for (var attribute in message.docs) {
+      listshopitem.add(
+        ItemList(
+          image:
+              await FirebaseStorage.instance.ref().child('1').getDownloadURL(),
+          name: attribute.data()["name"],
+          discount: attribute.data()["discount"],
+          distance: attribute.data()["distance"],
+          price: attribute.data()["price"],
+        ),
+      );
+      //print(m.data());
+    }
+    print(listshopitem);
+  }
+
   @override
   Widget build(BuildContext context) {
+    getShopItem();
     return Container(
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
@@ -57,15 +101,7 @@ class _CShopScreenState extends State<CShopScreen> {
                 child: ListView(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: true,
-                  children: <Widget>[
-                    ItemList(),
-                    ItemList(),
-                    ItemList(),
-                    ItemList(),
-                    ItemList(),
-                    ItemList(),
-                    ItemList(),
-                  ],
+                  children: listshopitem,
                 ),
               ),
             ],

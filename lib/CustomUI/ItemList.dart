@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:grocskart/Customer/ItemFocusScreen.dart';
 
 class ItemList extends StatelessWidget {
-  const ItemList({
-    Key key,
-  }) : super(key: key);
+  ItemList({this.image, this.name, this.distance, this.discount, this.price});
+
+  final String image, name;
+  final int price, discount;
+  final double distance;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class ItemList extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Image(
-                  image: AssetImage("images/logo_eps.png"),
+                  image: NetworkImage(image),
                 ),
               ),
             ),
@@ -34,7 +36,7 @@ class ItemList extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      "Sugar",
+                      name,
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
@@ -43,19 +45,19 @@ class ItemList extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text("Distance : 4.5km"),
+                    child: Text("Distance : $distance km"),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text("Discount : 5%"),
+                        child: Text("Discount : $discount %"),
                       ),
                       Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Text(
-                          "₹ 300",
+                          "₹ $price",
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,

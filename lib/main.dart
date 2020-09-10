@@ -6,8 +6,11 @@ import 'package:grocskart/WelcomeScreen.dart';
 import 'Customer/CloginScreen.dart';
 import 'package:grocskart/Seller/SloginScreen.dart';
 import 'package:grocskart/Seller/SRegisterScreen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(
     MaterialApp(
       initialRoute: WelcomeScreen.id,
