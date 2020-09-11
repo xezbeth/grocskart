@@ -74,7 +74,7 @@ class _CartScreenState extends State<CartScreen> {
                   return Text("ACTIVE");
                   break;
                 case ConnectionState.waiting:
-                  return Text("WAITING");
+                  return Text("LOADING");
                   break;
                 case ConnectionState.done:
                   return Column(

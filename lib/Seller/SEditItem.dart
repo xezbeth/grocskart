@@ -10,8 +10,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-class SAddItem extends StatefulWidget {
-  static final String id = "SAddItem";
+class SEditItem extends StatefulWidget {
+  static final String id = "SEditItem";
   @override
   _SAddItemState createState() => _SAddItemState();
 }
@@ -31,7 +31,7 @@ List<Text> getUnits() {
   return menuItems;
 }
 
-class _SAddItemState extends State<SAddItem> {
+class _SAddItemState extends State<SEditItem> {
   final _firestore = FirebaseFirestore.instance;
 
   final String shopName = "shop1";
@@ -57,7 +57,7 @@ class _SAddItemState extends State<SAddItem> {
 
   Future<String> saveImage(File image, String imageName) async {
     StorageReference ref =
-        FirebaseStorage.instance.ref().child(shopName).child("$imageName.jpg");
+    FirebaseStorage.instance.ref().child(shopName).child("$imageName.jpg");
     StorageUploadTask uploadTask = ref.putFile(image);
     var downloadURL = (await uploadTask.onComplete).ref.getDownloadURL();
     return await downloadURL;
@@ -81,15 +81,15 @@ class _SAddItemState extends State<SAddItem> {
                 children: <Widget>[
                   _image == null
                       ? Image(
-                          image: AssetImage("images/logo_eps.png"),
-                          height: 250,
-                          width: double.infinity,
-                        )
+                    image: AssetImage("images/logo_eps.png"),
+                    height: 250,
+                    width: double.infinity,
+                  )
                       : Image.file(
-                          _image,
-                          height: 250,
-                          width: double.infinity,
-                        ),
+                    _image,
+                    height: 250,
+                    width: double.infinity,
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[

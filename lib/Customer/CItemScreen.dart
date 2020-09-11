@@ -19,6 +19,7 @@ class _CShopScreenState extends State<CItemScreen> {
   Future shopFuture;
 
   String keyword, name;
+  bool canFilter = true;
   //int price, discount;
   //double distance;
   List<Widget> listShops = [];
@@ -33,7 +34,17 @@ class _CShopScreenState extends State<CItemScreen> {
   Future getShopItem(String searchKeyWord) async {
     print(name);
     listShops = [];
-    final message = await firestore.collection('shops/$name/items/').get();
+    var message;
+
+    if (searchKeyWord == null) {
+      message = await firestore.collection('shops/$name/items/').get();
+    } else {
+      message = await firestore
+          .collection('shops/$name/items/')
+          .where("name", isEqualTo: searchKeyWord)
+          .get();
+    }
+
     for (var attribute in message.docs) {
       print(attribute.data());
       im = await FirebaseStorage.instance
@@ -42,16 +53,7 @@ class _CShopScreenState extends State<CItemScreen> {
           .getDownloadURL();
 
       String image = im;
-      String name;
-      if (searchKeyWord == null) {
-        name = attribute.data()["name"];
-      } else {
-        if (attribute.data()["name"] == searchKeyWord) {
-          name = attribute.data()["name"];
-        } else {
-          continue;
-        }
-      }
+      String name = attribute.data()["name"];
       listShops.add(
         ShopList(
           image: im,
@@ -62,7 +64,7 @@ class _CShopScreenState extends State<CItemScreen> {
               'image': image,
               'name': attribute.data()["name"],
               'price': attribute.data()["price"],
-              'distance': attribute.data()["distance"].toDouble(),
+              //'distance': attribute.data()["distance"].toDouble(),
               'discount': attribute.data()["discount"],
               'desc': attribute.data()["desc"],
               'id': attribute.data()["id"],
@@ -82,7 +84,11 @@ class _CShopScreenState extends State<CItemScreen> {
     if (arguments != null) {
       name = arguments['name'];
     }
-    shopFuture = getShopItem(null);
+    if (canFilter) {
+      canFilter = false;
+      shopFuture = getShopItem(null);
+    }
+
     return Container(
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
@@ -108,8 +114,10 @@ class _CShopScreenState extends State<CItemScreen> {
                           iconSize: 40,
                           icon: Icon(Icons.search),
                           onPressed: () {
-                            shopFuture = getShopItem(keyword);
-                            setState(() {});
+                            setState(() {
+                              listShops = [];
+                              shopFuture = getShopItem(keyword);
+                            });
                           }),
                     ),
                   ],
@@ -143,7 +151,7 @@ class _CShopScreenState extends State<CItemScreen> {
                         return Text("ACTIVE");
                         break;
                       case ConnectionState.waiting:
-                        return Text("WAITING");
+                        return Text("LOADING");
                         break;
                       case ConnectionState.done:
                         return ListView(

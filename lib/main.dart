@@ -12,6 +12,7 @@ import 'package:grocskart/Seller/SloginScreen.dart';
 import 'package:grocskart/Seller/SRegisterScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:grocskart/Seller/SNavigationScreen.dart';
+import 'package:grocskart/Seller/SEditItem.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +32,8 @@ void main() async {
         CShopScreen.id: (context) => CShopScreen(),
         CartScreen.id: (context) => CartScreen(),
         CItemScreen.id: (context) => CItemScreen(),
-        SAddItem.id: (context) => SAddItem()
+        SAddItem.id: (context) => SAddItem(),
+        SEditItem.id: (context) => SEditItem()
       },
     ),
   );
