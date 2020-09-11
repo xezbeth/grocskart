@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocskart/Customer/CNavigationScreen.dart';
+import 'package:grocskart/Seller/SNavigationScreen.dart';
 import 'package:grocskart/constants.dart';
 import 'package:grocskart/CustomUI/Cbutton.dart';
 import 'package:grocskart/CustomUI/CinputBox.dart';
@@ -109,7 +110,9 @@ class _SloginScreenState extends State<SloginScreen> {
 
             cButton(
               text: "LOGIN",
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, SNavigationScreen.id);
+              },
             ),
 
             SizedBox(

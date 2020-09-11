@@ -39,7 +39,7 @@ class _ItemFocusSceenState extends State<ItemFocusScreen> {
 
   bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
     print("BACK BUTTON!"); // Do some stuff.
-    Navigator.popAndPushNamed(context, CNavigationScreen.id);
+    //Navigator.popAndPushNamed(context, CNavigationScreen.id);
 
     return false;
   }

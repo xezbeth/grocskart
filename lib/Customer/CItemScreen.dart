@@ -4,22 +4,21 @@ import 'package:grocskart/CustomUI/ItemList.dart';
 import 'package:grocskart/CustomUI/SearchBar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:grocskart/Customer/CItemScreen.dart';
 import 'package:grocskart/Customer/ItemFocusScreen.dart';
 import 'package:grocskart/CustomUI/ShopList.dart';
 
-class CShopScreen extends StatefulWidget {
-  static final String id = "CShopScreen";
+class CItemScreen extends StatefulWidget {
+  static final String id = "CItemScreen";
   @override
   _CShopScreenState createState() => _CShopScreenState();
 }
 
-class _CShopScreenState extends State<CShopScreen> {
+class _CShopScreenState extends State<CItemScreen> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   Future shopFuture;
 
-  String keyword;
+  String keyword, name;
   //int price, discount;
   //double distance;
   List<Widget> listShops = [];
@@ -29,12 +28,12 @@ class _CShopScreenState extends State<CShopScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    shopFuture = getShopItem(null);
   }
 
   Future getShopItem(String searchKeyWord) async {
+    print(name);
     listShops = [];
-    final message = await firestore.collection('shops').get();
+    final message = await firestore.collection('shops/$name/items/').get();
     for (var attribute in message.docs) {
       print(attribute.data());
       im = await FirebaseStorage.instance
@@ -59,8 +58,15 @@ class _CShopScreenState extends State<CShopScreen> {
           name: name,
           desc: attribute.data()["desc"],
           onPressed: () {
-            Navigator.pushNamed(context, CItemScreen.id, arguments: {
+            Navigator.pushNamed(context, ItemFocusScreen.id, arguments: {
+              'image': image,
               'name': attribute.data()["name"],
+              'price': attribute.data()["price"],
+              'distance': attribute.data()["distance"].toDouble(),
+              'discount': attribute.data()["discount"],
+              'desc': attribute.data()["desc"],
+              'id': attribute.data()["id"],
+              'quantity': attribute.data()["quantity"],
             });
           },
         ),
@@ -71,6 +77,12 @@ class _CShopScreenState extends State<CShopScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Map arguments = ModalRoute.of(context).settings.arguments as Map;
+
+    if (arguments != null) {
+      name = arguments['name'];
+    }
+    shopFuture = getShopItem(null);
     return Container(
       child: Scaffold(
         resizeToAvoidBottomPadding: false,
