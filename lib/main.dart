@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:grocskart/Customer/CNavigationScreen.dart';
 import 'package:grocskart/Customer/CRegisterScreen.dart';
+import 'package:grocskart/Customer/CShopScreen.dart';
+import 'package:grocskart/Customer/CartScreen.dart';
 import 'package:grocskart/Customer/ItemFocusScreen.dart';
 import 'package:grocskart/WelcomeScreen.dart';
 import 'Customer/CloginScreen.dart';
@@ -22,6 +24,8 @@ void main() async {
         SRegisterScreen.id: (context) => SRegisterScreen(),
         CNavigationScreen.id: (context) => CNavigationScreen(),
         ItemFocusScreen.id: (context) => ItemFocusScreen(),
+        CShopScreen.id: (context) => CShopScreen(),
+        CartScreen.id: (context) => CartScreen()
       },
     ),
   );

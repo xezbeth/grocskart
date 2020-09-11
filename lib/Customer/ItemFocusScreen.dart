@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:grocskart/CustomUI/Cbutton.dart';
+import 'package:grocskart/Customer/CNavigationScreen.dart';
+import 'package:grocskart/Customer/CShopScreen.dart';
+import 'package:grocskart/Customer/CartScreen.dart';
 import 'package:grocskart/utils/database_helper.dart';
 import 'package:grocskart/Customer/CartTracker.dart';
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 
 class ItemFocusScreen extends StatefulWidget {
   static final String id = "ItemFocusScreen";
 
-  String image, name, desc;
+  String image, name, desc, fromWhere;
   int price, discount, pid, quantity;
   double distance;
 
@@ -18,6 +22,28 @@ class ItemFocusScreen extends StatefulWidget {
 class _ItemFocusSceenState extends State<ItemFocusScreen> {
   int _quantity = 1;
   double _quantityinKG = 0.5;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    BackButtonInterceptor.add(myInterceptor);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    BackButtonInterceptor.remove(myInterceptor);
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    print("BACK BUTTON!"); // Do some stuff.
+    Navigator.popAndPushNamed(context, CNavigationScreen.id);
+
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     DatabaseHelper databaseHelper = DatabaseHelper();
@@ -29,10 +55,11 @@ class _ItemFocusSceenState extends State<ItemFocusScreen> {
       widget.name = arguments['name'];
       widget.desc = arguments['desc'];
       widget.price = arguments['price'];
-      widget.discount = arguments['discount'];
-      widget.distance = arguments['distance'];
+      //widget.discount = arguments['discount'];
+      //widget.distance = arguments['distance'];
       widget.pid = arguments['id'];
-      widget.quantity = arguments['quantity'];
+      widget.fromWhere = arguments['fromwhere'];
+      //widget.quantity = arguments['quantity'];
     }
 
     return Scaffold(
@@ -160,20 +187,44 @@ class _ItemFocusSceenState extends State<ItemFocusScreen> {
                   ],
                 ),
               ),
-              cButton(
-                text: "Add to Cart",
-                onPressed: () {
-                  CartTraker item = CartTraker(
-                      id: widget.pid,
-                      image: widget.image,
-                      name: widget.name,
-                      desc: widget.desc,
-                      quantity: widget.quantity,
-                      price: widget.price);
-                  databaseHelper.initializeDatabase();
-                  //databaseHelper.insertToCart(item);
-                  print(databaseHelper.insertToCart(item));
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Expanded(
+                    child: cButton(
+                      text: "Remove from cart",
+                      onPressed: () {
+                        CartTraker item = CartTraker(
+                            id: widget.pid,
+                            image: widget.image,
+                            name: widget.name,
+                            desc: widget.desc,
+                            quantity: _quantity,
+                            price: widget.price);
+                        databaseHelper.initializeDatabase();
+                        //databaseHelper.insertToCart(item);
+                        print(databaseHelper.deleteFromCart(item));
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: cButton(
+                      text: "Add to Cart",
+                      onPressed: () {
+                        CartTraker item = CartTraker(
+                            id: widget.pid,
+                            image: widget.image,
+                            name: widget.name,
+                            desc: widget.desc,
+                            quantity: _quantity,
+                            price: widget.price);
+                        databaseHelper.initializeDatabase();
+                        //databaseHelper.insertToCart(item);
+                        print(databaseHelper.insertToCart(item));
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

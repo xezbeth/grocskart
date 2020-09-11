@@ -7,6 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:grocskart/Customer/ItemFocusScreen.dart';
 
 class CShopScreen extends StatefulWidget {
+  static final String id = "CShopScreen";
   @override
   _CShopScreenState createState() => _CShopScreenState();
 }
@@ -31,7 +32,7 @@ class _CShopScreenState extends State<CShopScreen> {
 
   Future getShopItem(String searchKeyWord) async {
     listshopitem = [];
-    final message = await firestore.collection('shop').get();
+    final message = await firestore.collection('shops/shop1/items/').get();
     for (var attribute in message.docs) {
       im = await FirebaseStorage.instance
           .ref()
@@ -65,7 +66,8 @@ class _CShopScreenState extends State<CShopScreen> {
               'discount': attribute.data()["discount"],
               'desc': attribute.data()["desc"],
               'id': attribute.data()["id"],
-              'quantity': attribute.data()["quantity"]
+              'quantity': attribute.data()["quantity"],
+              'fromwhere': CShopScreen.id
             });
           },
         ),

@@ -56,8 +56,13 @@ class DatabaseHelper {
 
   Future<int> insertToCart(CartTraker cartItem) async {
     Database db = await this.database;
-    var result = await db.rawInsert(
-        "INSERT INTO $tableName VALUES(${cartItem.id},'${cartItem.name}','${cartItem.image}','${cartItem.desc}',${cartItem.quantity},${cartItem.price})");
+    var result;
+    try {
+      result = await db.rawInsert(
+          "INSERT INTO $tableName VALUES(${cartItem.id},'${cartItem.name}','${cartItem.image}','${cartItem.desc}',${cartItem.quantity},${cartItem.price})");
+    } catch (error) {
+      result = updateToCart(cartItem);
+    }
     return result;
   }
 
