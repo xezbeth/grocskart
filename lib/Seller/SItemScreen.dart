@@ -6,6 +6,7 @@ import 'package:grocskart/Seller/SAddItem.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:grocskart/CustomUI/MenuList.dart';
 import 'SEditItem.dart';
+import 'package:grocskart/CustomUI/ItemList.dart';
 
 class SItemScreen extends StatefulWidget {
   @override
@@ -15,13 +16,14 @@ class SItemScreen extends StatefulWidget {
 class _SItemScreenState extends State<SItemScreen> {
   String keyword, name = "shop1";
   Future menuFuture;
-  List<Widget> shopList = [];
+  List<Widget> menuList = [];
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   var im;
 
   Future getMenuItem(String searchKeyWord) async {
-    shopList = [];
+    menuList = [];
     var message;
+
 
     if (searchKeyWord == null || searchKeyWord == "") {
       message = await firestore.collection('shops/$name/items/').get();
@@ -41,11 +43,13 @@ class _SItemScreenState extends State<SItemScreen> {
 
       String image = im;
       String name = attribute.data()["name"];
-      shopList.add(
+      menuList.add(
         MenuList(
           image: im,
           name: name,
-          desc: attribute.data()["desc"],
+          price: attribute.data()['price'].toString(),
+          quantity: attribute.data()['quantity'].toString(),
+          discount: attribute.data()['discount'].toString(),
           onPressed: () {
             Navigator.pushNamed(context, SEditItem.id, arguments: {
               'image': image,
@@ -61,7 +65,7 @@ class _SItemScreenState extends State<SItemScreen> {
         ),
       );
     }
-    return shopList;
+    return menuList;
   }
 
   @override
@@ -96,6 +100,7 @@ class _SItemScreenState extends State<SItemScreen> {
                       iconSize: 40,
                       icon: Icon(Icons.search),
                       onPressed: () {
+                        print(menuList.length);
                         menuFuture = getMenuItem(keyword);
                         setState(() {});
                       }),
@@ -124,7 +129,7 @@ class _SItemScreenState extends State<SItemScreen> {
                             child: ListView(
                               scrollDirection: Axis.vertical,
                               shrinkWrap: true,
-                              children: shopList,
+                              children: menuList,
                             ),
                           ),
                         ],

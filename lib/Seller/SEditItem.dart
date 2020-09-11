@@ -37,7 +37,7 @@ class _SAddItemState extends State<SEditItem> {
   final String shopName = "shop1";
 
   String units = "qty", itemName, itemDesc, imageLink;
-  String price, quantity, discount;
+  String price, quantity, discount, id, image;
   File _image;
 
   Future getImage(bool isCamera) async {
@@ -57,7 +57,7 @@ class _SAddItemState extends State<SEditItem> {
 
   Future<String> saveImage(File image, String imageName) async {
     StorageReference ref =
-    FirebaseStorage.instance.ref().child(shopName).child("$imageName.jpg");
+        FirebaseStorage.instance.ref().child(shopName).child("$imageName.jpg");
     StorageUploadTask uploadTask = ref.putFile(image);
     var downloadURL = (await uploadTask.onComplete).ref.getDownloadURL();
     return await downloadURL;
@@ -65,6 +65,18 @@ class _SAddItemState extends State<SEditItem> {
 
   @override
   Widget build(BuildContext context) {
+    final Map arguments = ModalRoute.of(context).settings.arguments as Map;
+
+    if (arguments != null) {
+      image = arguments['image'];
+      itemName = arguments['name'];
+      itemDesc = arguments['desc'];
+      price = arguments['price'].toString();
+      discount = arguments['discount'].toString();
+      id = arguments['id'].toString();
+      quantity = arguments['quantity'].toString();
+    }
+
     return Scaffold(
       resizeToAvoidBottomPadding: true,
       body: SafeArea(
@@ -81,15 +93,15 @@ class _SAddItemState extends State<SEditItem> {
                 children: <Widget>[
                   _image == null
                       ? Image(
-                    image: AssetImage("images/logo_eps.png"),
-                    height: 250,
-                    width: double.infinity,
-                  )
+                          image: NetworkImage(image),
+                          height: 250,
+                          width: double.infinity,
+                        )
                       : Image.file(
-                    _image,
-                    height: 250,
-                    width: double.infinity,
-                  ),
+                          _image,
+                          height: 250,
+                          width: double.infinity,
+                        ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -124,13 +136,13 @@ class _SAddItemState extends State<SEditItem> {
                     ],
                   ),
                   Ctextfield(
-                    hint: "name",
+                    hint: itemName,
                     onChanged: (value) {
                       itemName = value;
                     },
                   ),
                   QTextField(
-                    hint: "short description",
+                    hint: itemDesc,
                     onChanged: (value) {
                       itemDesc = value;
                     },
@@ -158,7 +170,7 @@ class _SAddItemState extends State<SEditItem> {
                       Expanded(
                         flex: 1,
                         child: Ctextfield(
-                          hint: units,
+                          hint: quantity,
                           onChanged: (value) {
                             quantity = value;
                             print(quantity);
@@ -172,7 +184,7 @@ class _SAddItemState extends State<SEditItem> {
                     children: <Widget>[
                       Cicontext(
                         icon: Image.asset("images/inr.png"),
-                        hint: "price",
+                        hint: price,
                         onChanged: (value) {
                           price = value;
                         },
@@ -181,7 +193,7 @@ class _SAddItemState extends State<SEditItem> {
                         icon: Image.asset(
                           "images/percent.png",
                         ),
-                        hint: "discount",
+                        hint: discount,
                         onChanged: (value) {
                           discount = value;
                         },

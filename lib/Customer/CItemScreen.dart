@@ -55,10 +55,11 @@ class _CShopScreenState extends State<CItemScreen> {
       String image = im;
       String name = attribute.data()["name"];
       listShops.add(
-        ShopList(
+        ItemList(
           image: im,
           name: name,
-          desc: attribute.data()["desc"],
+          discount: attribute.data()['discount'],
+          price: attribute.data()['price'],
           onPressed: () {
             Navigator.pushNamed(context, ItemFocusScreen.id, arguments: {
               'image': image,

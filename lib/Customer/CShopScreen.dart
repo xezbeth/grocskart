@@ -57,7 +57,7 @@ class _CShopScreenState extends State<CShopScreen> {
         ShopList(
           image: im,
           name: name,
-          desc: attribute.data()["desc"],
+          desc: attribute.data()['desc'],
           onPressed: () {
             Navigator.pushNamed(context, CItemScreen.id, arguments: {
               'name': attribute.data()["name"],

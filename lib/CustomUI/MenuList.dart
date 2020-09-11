@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
 class MenuList extends StatelessWidget {
-  MenuList({this.image, this.name, this.desc, this.onPressed});
+  MenuList(
+      {this.image,
+      this.name,
+      this.price,
+      this.quantity,
+      this.discount,
+      this.onPressed});
 
-  final String image, name, desc;
+  final String image, name, price, quantity, discount;
 
   final Function onPressed;
 
@@ -19,8 +25,11 @@ class MenuList extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Image(
-                  image: NetworkImage(image),
+                child: Container(
+                  height: 120,
+                  child: Image(
+                    image: NetworkImage(image),
+                  ),
                 ),
               ),
             ),
@@ -43,11 +52,35 @@ class MenuList extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
-                      desc,
+                      "qty : $quantity",
                       style: TextStyle(
                         fontSize: 18,
                       ),
                     ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "discount : $discount%",
+                          style: TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "₹ $price",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
