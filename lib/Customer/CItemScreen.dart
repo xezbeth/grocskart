@@ -6,6 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:grocskart/Customer/ItemFocusScreen.dart';
 import 'package:grocskart/CustomUI/ShopList.dart';
+import 'package:grocskart/constants.dart';
+import 'package:lazy_loading_list/lazy_loading_list.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CItemScreen extends StatefulWidget {
   static final String id = "CItemScreen";
@@ -16,40 +19,79 @@ class CItemScreen extends StatefulWidget {
 class _CShopScreenState extends State<CItemScreen> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
+  ScrollController _scrollController = ScrollController();
+  int _currentMax = 0;
+
   Future shopFuture;
 
-  String keyword, name;
+  String keyword, shopName, shopID;
   bool canFilter = true;
   //int price, discount;
   //double distance;
-  List<Widget> listShops = [];
+  List<Widget> listShops = [], listItems = [];
   var im;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _getMoreData();
+      }
+    });
+  }
+
+  _getMoreData() {
+    for (int i = _currentMax; i < (_currentMax + 5); i++) {
+      if (i < listShops.length) {
+        listItems.add(listShops[i]);
+      }
+    }
+
+    _currentMax += 5;
+
+    setState(() {});
   }
 
   Future getShopItem(String searchKeyWord) async {
-    print(name);
+    print(shopName);
     listShops = [];
+    listItems = [];
+    _currentMax = 0;
     var message;
+    if (shopID == null) {
+      var data = await firestore
+          .collection('shops')
+          .where("name", isEqualTo: shopName)
+          .get();
+
+      for (var attr in data.docs) {
+        print("doccccc : ${attr.id}");
+        shopID = attr.id;
+      }
+    }
 
     if (searchKeyWord == null) {
-      message = await firestore.collection('shops/$name/items/').get();
+      message = await firestore
+          .collection('shops')
+          .doc(shopID)
+          .collection('items')
+          .get();
     } else {
       message = await firestore
-          .collection('shops/$name/items/')
+          .collection('shops')
+          .doc(shopID)
+          .collection('items')
           .where("name", isEqualTo: searchKeyWord)
           .get();
     }
-
     for (var attribute in message.docs) {
-      print(attribute.data());
+      //print(attribute.data());
       im = await FirebaseStorage.instance
           .ref()
-          .child('shop1/${attribute.data()["image"]}.jpg')
+          .child('$shopName/${attribute.data()["image"]}.jpg')
           .getDownloadURL();
 
       String image = im;
@@ -75,6 +117,7 @@ class _CShopScreenState extends State<CItemScreen> {
         ),
       );
     }
+    _getMoreData();
     return listShops;
   }
 
@@ -83,7 +126,7 @@ class _CShopScreenState extends State<CItemScreen> {
     final Map arguments = ModalRoute.of(context).settings.arguments as Map;
 
     if (arguments != null) {
-      name = arguments['name'];
+      shopName = arguments['name'];
     }
     if (canFilter) {
       canFilter = false;
@@ -118,6 +161,7 @@ class _CShopScreenState extends State<CItemScreen> {
                             setState(() {
                               listShops = [];
                               shopFuture = getShopItem(keyword);
+                              //shopFuture = getShopItem(null);
                             });
                           }),
                     ),
@@ -152,13 +196,49 @@ class _CShopScreenState extends State<CItemScreen> {
                         return Text("ACTIVE");
                         break;
                       case ConnectionState.waiting:
-                        return Text("LOADING");
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SpinKitWanderingCubes(
+                              color: kdark,
+                              size: 60,
+                            ),
+                            Text("LOADING"),
+                          ],
+                        );
                         break;
                       case ConnectionState.done:
-                        return ListView(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          children: listShops,
+                        return ListView.builder(
+                          controller: _scrollController,
+                          itemCount: listItems.length + 1,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (index == listItems.length) {
+                              if (index >= listShops.length) {
+                                return Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("No More Items"),
+                                  ),
+                                );
+                              } else {
+                                return Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 30, top: 10),
+                                  child: SpinKitWanderingCubes(
+                                    color: kdark,
+                                    size: 50,
+                                  ),
+                                );
+                              }
+                            }
+                            return LazyLoadingList(
+                              initialSizeOfItems: 5,
+                              index: index,
+                              child: listItems[index],
+                              loadMore: () => print('Loading More'),
+                              hasMore: true,
+                            );
+                          },
                         );
                         break;
                       default:

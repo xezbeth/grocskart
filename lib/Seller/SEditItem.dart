@@ -9,9 +9,14 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 
 class SEditItem extends StatefulWidget {
   static final String id = "SEditItem";
+
+  var im;
+
   @override
   _SAddItemState createState() => _SAddItemState();
 }
@@ -33,12 +38,26 @@ List<Text> getUnits() {
 
 class _SAddItemState extends State<SEditItem> {
   final _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   final String shopName = "shop1";
 
   String units = "qty", itemName, itemDesc, imageLink;
-  String price, quantity, discount, id, image;
+  String price, quantity, discount, id, image, itemID;
   File _image;
+  var data;
+
+  Future<String> getItem(String searchKeyWord) async {
+    data = await firestore
+        .collection('shops/$shopName/items/')
+        .where("id", isEqualTo: searchKeyWord)
+        .get();
+
+    for (var attr in data.docs) {
+      print("doccccc : ${attr.id}");
+      itemID = attr.id;
+    }
+  }
 
   Future getImage(bool isCamera) async {
     var image;
@@ -56,11 +75,26 @@ class _SAddItemState extends State<SEditItem> {
   }
 
   Future<String> saveImage(File image, String imageName) async {
-    StorageReference ref =
-        FirebaseStorage.instance.ref().child(shopName).child("$imageName.jpg");
-    StorageUploadTask uploadTask = ref.putFile(image);
-    var downloadURL = (await uploadTask.onComplete).ref.getDownloadURL();
-    return await downloadURL;
+    if (image != null) {
+      img.Image reduceImage = img.decodeImage(image.readAsBytesSync());
+      reduceImage = img.copyResize(reduceImage, height: 250);
+
+      Directory appDocDir = await getApplicationDocumentsDirectory();
+      String appDocPath = appDocDir.path;
+
+      image = File(appDocPath + "thumb.jpg")
+        ..writeAsBytesSync(img.encodeJpg(reduceImage));
+
+      StorageReference ref = FirebaseStorage.instance
+          .ref()
+          .child(shopName)
+          .child("$imageName.jpg");
+      StorageUploadTask uploadTask = ref.putFile(image);
+      var downloadURL = (await uploadTask.onComplete).ref.getDownloadURL();
+      return await downloadURL;
+    } else {
+      return null;
+    }
   }
 
   @override
@@ -75,6 +109,8 @@ class _SAddItemState extends State<SEditItem> {
       discount = arguments['discount'].toString();
       id = arguments['id'].toString();
       quantity = arguments['quantity'].toString();
+
+      getItem(id);
     }
 
     return Scaffold(
@@ -216,9 +252,18 @@ class _SAddItemState extends State<SEditItem> {
                         child: cButton(
                           text: "delete",
                           onPressed: () {
-                            //  print(_image.toString());
-                            // var imageLink = saveImage(_image, itemName);
-                            // print(imageLink);
+                            if (itemID != null) {
+                              _firestore
+                                  .collection('shops/$shopName/items/')
+                                  .doc(itemID)
+                                  .delete();
+
+                              FirebaseStorage.instance
+                                  .ref()
+                                  .child(shopName)
+                                  .child("$itemName.jpg")
+                                  .delete();
+                            }
                           },
                         ),
                       ),
@@ -227,19 +272,26 @@ class _SAddItemState extends State<SEditItem> {
                   cButton(
                     text: "push",
                     onPressed: () {
-                      print(price);
+                      //print(data.docs);
                       print(quantity);
                       //var imageLink = saveImage(_image.toString());
                       var imageLink = saveImage(_image, itemName);
-                      _firestore.collection('shops/$shopName/items/').add({
+                      print("document id : $itemID");
+                      _firestore
+                          .collection('shops/$shopName/items/')
+                          .doc(itemID)
+                          .update({
                         'image': itemName,
                         'name': itemName,
                         'desc': itemDesc,
                         'price': int.parse(price),
                         'discount': int.parse(discount),
-                        'id': 10,
+                        'id': id,
                         'quantity': int.parse(quantity),
                       });
+                      // _firestore.collection('shops/$shopName/items/').add({
+
+                      //});
                     },
                   ),
                 ],

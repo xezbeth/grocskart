@@ -11,8 +11,8 @@ import 'package:back_button_interceptor/back_button_interceptor.dart';
 class ItemFocusScreen extends StatefulWidget {
   static final String id = "ItemFocusScreen";
 
-  String image, name, desc, fromWhere;
-  int price, discount, pid, quantity;
+  String image, name, desc, fromWhere, pid;
+  int price, discount, quantity;
   double distance;
 
   @override

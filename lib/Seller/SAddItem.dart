@@ -9,6 +9,9 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:math';
+import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 
 class SAddItem extends StatefulWidget {
   static final String id = "SAddItem";
@@ -56,6 +59,14 @@ class _SAddItemState extends State<SAddItem> {
   }
 
   Future<String> saveImage(File image, String imageName) async {
+    img.Image reduceImage = img.decodeImage(image.readAsBytesSync());
+    reduceImage = img.copyResize(reduceImage, height: 250);
+
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+    String appDocPath = appDocDir.path;
+
+    image = File(appDocPath + "thumb.jpg")
+      ..writeAsBytesSync(img.encodeJpg(reduceImage));
     StorageReference ref =
         FirebaseStorage.instance.ref().child(shopName).child("$imageName.jpg");
     StorageUploadTask uploadTask = ref.putFile(image);
@@ -225,9 +236,10 @@ class _SAddItemState extends State<SAddItem> {
                         'desc': itemDesc,
                         'price': int.parse(price),
                         'discount': int.parse(discount),
-                        'id': 10,
+                        'id':
+                            itemName + (Random().nextInt(999) + 100).toString(),
                         'quantity': int.parse(quantity),
-                      });
+                      }).whenComplete(() {});
                     },
                   ),
                 ],

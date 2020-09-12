@@ -7,6 +7,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:grocskart/Customer/CItemScreen.dart';
 import 'package:grocskart/Customer/ItemFocusScreen.dart';
 import 'package:grocskart/CustomUI/ShopList.dart';
+import 'package:grocskart/constants.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CShopScreen extends StatefulWidget {
   static final String id = "CShopScreen";
@@ -39,7 +41,7 @@ class _CShopScreenState extends State<CShopScreen> {
       print(attribute.data());
       im = await FirebaseStorage.instance
           .ref()
-          .child('shop1/${attribute.data()["image"]}.jpg')
+          .child('${attribute.data()["name"]}/${attribute.data()["image"]}.jpg')
           .getDownloadURL();
 
       String image = im;
@@ -131,7 +133,16 @@ class _CShopScreenState extends State<CShopScreen> {
                         return Text("ACTIVE");
                         break;
                       case ConnectionState.waiting:
-                        return Text("WAITING");
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SpinKitWanderingCubes(
+                              color: kdark,
+                              size: 60,
+                            ),
+                            Text("LOADING"),
+                          ],
+                        );
                         break;
                       case ConnectionState.done:
                         return ListView(

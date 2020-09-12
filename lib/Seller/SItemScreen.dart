@@ -6,7 +6,9 @@ import 'package:grocskart/Seller/SAddItem.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:grocskart/CustomUI/MenuList.dart';
 import 'SEditItem.dart';
-import 'package:grocskart/CustomUI/ItemList.dart';
+import 'package:grocskart/constants.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lazy_loading_list/lazy_loading_list.dart';
 
 class SItemScreen extends StatefulWidget {
   @override
@@ -16,14 +18,29 @@ class SItemScreen extends StatefulWidget {
 class _SItemScreenState extends State<SItemScreen> {
   String keyword, name = "shop1";
   Future menuFuture;
-  List<Widget> menuList = [];
+  List<Widget> menuList = [], itemList = [];
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  ScrollController _scrollController = ScrollController();
   var im;
+  int _currentMax = 0;
+
+  _getMoreData() {
+    for (int i = _currentMax; i < (_currentMax + 5); i++) {
+      if (i < menuList.length) {
+        itemList.add(menuList[i]);
+      }
+    }
+
+    _currentMax += 5;
+
+    setState(() {});
+  }
 
   Future getMenuItem(String searchKeyWord) async {
     menuList = [];
+    itemList = [];
+    _currentMax = 0;
     var message;
-
 
     if (searchKeyWord == null || searchKeyWord == "") {
       message = await firestore.collection('shops/$name/items/').get();
@@ -35,7 +52,7 @@ class _SItemScreenState extends State<SItemScreen> {
     }
 
     for (var attribute in message.docs) {
-      print(attribute.data());
+      // print(attribute.data());
       im = await FirebaseStorage.instance
           .ref()
           .child('shop1/${attribute.data()["image"]}.jpg')
@@ -65,6 +82,7 @@ class _SItemScreenState extends State<SItemScreen> {
         ),
       );
     }
+    _getMoreData();
     return menuList;
   }
 
@@ -72,6 +90,14 @@ class _SItemScreenState extends State<SItemScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+          _scrollController.position.maxScrollExtent) {
+        _getMoreData();
+      }
+    });
+
     menuFuture = getMenuItem(null);
   }
 
@@ -119,20 +145,49 @@ class _SItemScreenState extends State<SItemScreen> {
                       return Text("ACTIVE");
                       break;
                     case ConnectionState.waiting:
-                      return Text("LOADING");
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SpinKitWanderingCubes(
+                            color: kdark,
+                            size: 60,
+                          ),
+                          Text("LOADING"),
+                        ],
+                      );
                       break;
                     case ConnectionState.done:
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Expanded(
-                            child: ListView(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              children: menuList,
-                            ),
-                          ),
-                        ],
+                      return ListView.builder(
+                        controller: _scrollController,
+                        itemCount: itemList.length + 1,
+                        itemBuilder: (BuildContext context, int index) {
+                          if (index == itemList.length) {
+                            if (index >= menuList.length) {
+                              return Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text("No More Items"),
+                                ),
+                              );
+                            } else {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.only(bottom: 30, top: 10),
+                                child: SpinKitWanderingCubes(
+                                  color: kdark,
+                                  size: 50,
+                                ),
+                              );
+                            }
+                          }
+                          return LazyLoadingList(
+                            initialSizeOfItems: 5,
+                            index: index,
+                            child: itemList[index],
+                            loadMore: () => print('Loading More'),
+                            hasMore: true,
+                          );
+                        },
                       );
                       break;
                     default:

@@ -44,7 +44,7 @@ class DatabaseHelper {
 
   void _createDb(Database db, int version) async {
     await db.execute(
-        "CREATE TABLE $tableName($id INTERGER PRIMARY KEY,$name TEXT,$image TEXT,"
+        "CREATE TABLE $tableName($id TEXT PRIMARY KEY,$name TEXT,$image TEXT,"
         "$desc TEXT,$quantity INTEGER,$price INTEGER)");
   }
 
@@ -59,8 +59,9 @@ class DatabaseHelper {
     var result;
     try {
       result = await db.rawInsert(
-          "INSERT INTO $tableName VALUES(${cartItem.id},'${cartItem.name}','${cartItem.image}','${cartItem.desc}',${cartItem.quantity},${cartItem.price})");
+          "INSERT INTO $tableName VALUES('${cartItem.id}','${cartItem.name}','${cartItem.image}','${cartItem.desc}',${cartItem.quantity},${cartItem.price})");
     } catch (error) {
+      print(error);
       result = updateToCart(cartItem);
     }
     return result;
@@ -70,14 +71,14 @@ class DatabaseHelper {
     Database db = await this.database;
     var result = await db
         .rawUpdate("UPDATE $tableName SET $quantity = ${cartItem.quantity}"
-            " WHERE $id = ${cartItem.id}");
+            " WHERE $id = '${cartItem.id}'");
     return result;
   }
 
   Future<int> deleteFromCart(CartTraker cartItem) async {
     Database db = await this.database;
-    var result =
-        await db.rawDelete("DELETE FROM $tableName WHERE $id = ${cartItem.id}");
+    var result = await db
+        .rawDelete("DELETE FROM $tableName WHERE $id = '${cartItem.id}'");
     return result;
   }
 
