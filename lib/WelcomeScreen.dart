@@ -35,7 +35,7 @@ class WelcomeScreen extends StatelessWidget {
               style: TextStyle(
                 fontFamily: "BalsamiqSans",
                 fontSize: 22,
-                color: kdark,
+                color: kdarkText,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2,
               ),
@@ -48,7 +48,7 @@ class WelcomeScreen extends StatelessWidget {
               style: TextStyle(
                 fontFamily: "BalsamiqSans",
                 fontSize: 22,
-                color: kdark,
+                color: kdarkText,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 2,
               ),
@@ -62,7 +62,7 @@ class WelcomeScreen extends StatelessWidget {
                 Expanded(
                   child: cButton(
                     text: "BUY",
-                    color: Colors.green,
+                    color: Colors.lightGreenAccent,
                     onPressed: () {
                       Navigator.pushNamed(context, CloginScreen.id);
                     },
@@ -71,7 +71,7 @@ class WelcomeScreen extends StatelessWidget {
                 Expanded(
                   child: cButton(
                     text: "SELL",
-                    color: Colors.red,
+                    color: Colors.pinkAccent,
                     onPressed: () {
                       Navigator.pushNamed(context, SloginScreen.id);
                     },

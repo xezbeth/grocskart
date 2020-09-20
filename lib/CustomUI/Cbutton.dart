@@ -11,7 +11,7 @@ class cButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Material(
         elevation: 5.0,
         color: color,
@@ -56,7 +56,7 @@ class cRoundIconButton extends StatelessWidget {
           height: 45,
         ),
         shape: CircleBorder(),
-        fillColor: Color(0xFF4C4F5E),
+        fillColor: kcyan,
       ),
     );
   }

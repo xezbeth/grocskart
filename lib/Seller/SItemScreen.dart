@@ -104,6 +104,7 @@ class _SItemScreenState extends State<SItemScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: kyellowSubtle,
       resizeToAvoidBottomPadding: false,
       body: SafeArea(
         child: Column(
@@ -152,7 +153,12 @@ class _SItemScreenState extends State<SItemScreen> {
                             color: kdark,
                             size: 60,
                           ),
-                          Text("LOADING"),
+                          Text(
+                            "LOADING",
+                            style: TextStyle(
+                              fontFamily: "BalsamiqSans",
+                            ),
+                          ),
                         ],
                       );
                       break;
@@ -165,8 +171,14 @@ class _SItemScreenState extends State<SItemScreen> {
                             if (index >= menuList.length) {
                               return Center(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text("No More Items"),
+                                  padding: const EdgeInsets.all(15),
+                                  child: Text(
+                                    "No More Items",
+                                    style: TextStyle(
+                                      fontFamily: "BalsamiqSans",
+                                      fontSize: 20,
+                                    ),
+                                  ),
                                 ),
                               );
                             } else {

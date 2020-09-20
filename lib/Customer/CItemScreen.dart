@@ -78,6 +78,7 @@ class _CShopScreenState extends State<CItemScreen> {
           .collection('shops')
           .doc(shopID)
           .collection('items')
+          .limit(5)
           .get();
     } else {
       message = await firestore
@@ -135,6 +136,7 @@ class _CShopScreenState extends State<CItemScreen> {
 
     return Container(
       child: Scaffold(
+        backgroundColor: kyellowSubtle,
         resizeToAvoidBottomPadding: false,
         body: SafeArea(
           child: Column(
@@ -156,7 +158,10 @@ class _CShopScreenState extends State<CItemScreen> {
                       child: IconButton(
                           padding: EdgeInsets.only(right: 5),
                           iconSize: 40,
-                          icon: Icon(Icons.search),
+                          icon: Icon(
+                            Icons.search,
+                            color: kcyan,
+                          ),
                           onPressed: () {
                             setState(() {
                               listShops = [];
@@ -176,7 +181,10 @@ class _CShopScreenState extends State<CItemScreen> {
                       child: IconButton(
                           padding: EdgeInsets.only(right: 5),
                           iconSize: 40,
-                          icon: Icon(Icons.filter_list),
+                          icon: Icon(
+                            Icons.filter_list,
+                            color: kprimary,
+                          ),
                           onPressed: () {
                             print(listShops.length);
                           }),

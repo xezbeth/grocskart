@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grocskart/Customer/ItemFocusScreen.dart';
+import 'package:grocskart/constants.dart';
 
 class ItemList extends StatelessWidget {
   ItemList(
@@ -44,20 +45,32 @@ class ItemList extends StatelessWidget {
                       name,
                       style: TextStyle(
                         fontSize: 26,
+                        color: kdarkText,
                         fontWeight: FontWeight.bold,
+                        fontFamily: "BalsamiqSans",
                       ),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text("Distance : $distance km"),
+                    child: Text(
+                      "Distance : $distance km",
+                      style: TextStyle(
+                        fontFamily: "BalsamiqSans",
+                      ),
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text("Discount : $discount %"),
+                        child: Text(
+                          "Discount : $discount %",
+                          style: TextStyle(
+                            fontFamily: "BalsamiqSans",
+                          ),
+                        ),
                       ),
                       Padding(
                         padding: EdgeInsets.all(8.0),
@@ -65,6 +78,7 @@ class ItemList extends StatelessWidget {
                           "₹ $price",
                           style: TextStyle(
                             fontSize: 24,
+                            fontFamily: "BalsamiqSans",
                             fontWeight: FontWeight.bold,
                           ),
                         ),

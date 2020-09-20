@@ -27,6 +27,8 @@ List<Text> getUnits() {
         item,
         style: TextStyle(
           fontSize: 24,
+          color: kdarkText,
+          fontFamily: "BalsamiqSans",
         ),
       ),
     );
@@ -77,29 +79,39 @@ class _SAddItemState extends State<SAddItem> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: klightgreen,
       resizeToAvoidBottomPadding: true,
       body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            SizedBox(
-              height: 10,
-            ),
             Expanded(
               child: ListView(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
                 children: <Widget>[
                   _image == null
-                      ? Image(
-                          image: AssetImage("images/logo_eps.png"),
-                          height: 250,
-                          width: double.infinity,
+                      ? Container(
+                          color: kgrey,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            child: Image(
+                              image: AssetImage("images/logo_eps.png"),
+                              height: 250,
+                              width: double.infinity,
+                            ),
+                          ),
                         )
-                      : Image.file(
-                          _image,
-                          height: 250,
-                          width: double.infinity,
+                      : Container(
+                          color: kgrey,
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 5),
+                            child: Image.file(
+                              _image,
+                              height: 250,
+                              width: double.infinity,
+                            ),
+                          ),
                         ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -109,13 +121,19 @@ class _SAddItemState extends State<SAddItem> {
                           IconButton(
                             icon: Icon(
                               Icons.camera_alt,
+                              color: kcyan,
                               size: 40,
                             ),
                             onPressed: () {
                               getImage(true);
                             },
                           ),
-                          Text("Camera"),
+                          Text(
+                            "Camera",
+                            style: TextStyle(
+                              fontFamily: "BalsamiqSans",
+                            ),
+                          ),
                         ],
                       ),
                       Column(
@@ -123,13 +141,19 @@ class _SAddItemState extends State<SAddItem> {
                           IconButton(
                             icon: Icon(
                               Icons.insert_drive_file,
+                              color: kcyan,
                               size: 40,
                             ),
                             onPressed: () {
                               getImage(false);
                             },
                           ),
-                          Text("Gallery"),
+                          Text(
+                            "Gallery",
+                            style: TextStyle(
+                              fontFamily: "BalsamiqSans",
+                            ),
+                          ),
                         ],
                       ),
                     ],
@@ -182,7 +206,10 @@ class _SAddItemState extends State<SAddItem> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Cicontext(
-                        icon: Image.asset("images/inr.png"),
+                        icon: Image.asset(
+                          "images/inr.png",
+                          color: Colors.green,
+                        ),
                         hint: "price",
                         onChanged: (value) {
                           price = value;
@@ -191,6 +218,7 @@ class _SAddItemState extends State<SAddItem> {
                       Cicontext(
                         icon: Image.asset(
                           "images/percent.png",
+                          color: kdarkText,
                         ),
                         hint: "discount",
                         onChanged: (value) {

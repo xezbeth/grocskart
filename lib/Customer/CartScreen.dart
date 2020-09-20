@@ -4,6 +4,7 @@ import 'package:grocskart/CustomUI/CartList.dart';
 import 'package:grocskart/utils/database_helper.dart';
 import 'CartTracker.dart';
 import 'package:grocskart/Customer/ItemFocusScreen.dart';
+import 'package:grocskart/constants.dart';
 
 class CartScreen extends StatefulWidget {
   static final String id = "CartScreen";
@@ -16,7 +17,11 @@ class _CartScreenState extends State<CartScreen> {
   Future cartFuture;
   DatabaseHelper databaseHelper = DatabaseHelper();
 
-  int subTotal = 0, tax = 15, deliveryCharges = 50, totalPrice = 0;
+  int subTotal = 0,
+      tax = 15,
+      deliveryCharges = 50,
+      totalPrice = 0,
+      itemCount = 0;
 
   @override
   void initState() {
@@ -29,6 +34,7 @@ class _CartScreenState extends State<CartScreen> {
     cartList = [];
     databaseHelper.initializeDatabase();
     List<Map> result = await databaseHelper.getCartMapList();
+    itemCount = await databaseHelper.getCount();
     for (var r in result) {
       subTotal += (r['price'] * r['quantity']);
       cartList.add(CartList(
@@ -61,6 +67,23 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return Container(
       child: Scaffold(
+        backgroundColor: kyellowSubtle,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Center(
+            child: Text(
+              "Shopping Cart",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: kdarkText,
+                fontFamily: "BalsamiqSans",
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          shadowColor: kdarkText,
+          backgroundColor: kprimary,
+        ),
         resizeToAvoidBottomPadding: false,
         body: SafeArea(
           child: FutureBuilder(
@@ -88,6 +111,11 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                       ),
                       Container(
+                        height: 2,
+                        color: kdarkText,
+                      ),
+                      Container(
+                        color: kprimary,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -97,6 +125,7 @@ class _CartScreenState extends State<CartScreen> {
                                 "Details",
                                 style: TextStyle(
                                   fontSize: 20,
+                                  fontFamily: "BalsamiqSans",
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -105,21 +134,25 @@ class _CartScreenState extends State<CartScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
                                 Text(
+                                  "Items :\n"
                                   "Sub Total :\n"
                                   "Tax :\n"
                                   "Delivery Charges :",
                                   style: TextStyle(
                                     fontSize: 16,
+                                    fontFamily: "BalsamiqSans",
                                   ),
                                   textAlign: TextAlign.justify,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 Text(
+                                  "$itemCount\n"
                                   "₹ $subTotal\n"
                                   "₹ $tax\n"
                                   "₹ $deliveryCharges",
                                   style: TextStyle(
                                     fontSize: 16,
+                                    fontFamily: "BalsamiqSans",
                                     fontWeight: FontWeight.bold,
                                   ),
                                   textAlign: TextAlign.justify,
@@ -127,29 +160,37 @@ class _CartScreenState extends State<CartScreen> {
                                 ),
                               ],
                             ),
-                            Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: Center(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 10),
-                                      child: Text(
-                                        "Total : ₹ $totalPrice",
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
+                            Container(
+                              height: 2,
+                              color: kdarkText,
+                            ),
+                            Container(
+                              color: kprimary,
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Center(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 10),
+                                        child: Text(
+                                          "Total : ₹ $totalPrice",
+                                          style: TextStyle(
+                                            fontFamily: "BalsamiqSans",
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: cButton(
-                                    text: "Checkout",
-                                    onPressed: () {},
+                                  Expanded(
+                                    child: cButton(
+                                      text: "Checkout",
+                                      onPressed: () {},
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ],
                         ),

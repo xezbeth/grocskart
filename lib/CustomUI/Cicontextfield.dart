@@ -28,7 +28,10 @@ class Cicontext extends StatelessWidget {
                 onChanged: onChanged,
                 textAlign: TextAlign.center,
                 decoration: InputDecoration(
-                  hintStyle: TextStyle(color: Color(0xffaeb880)),
+                  hintStyle: TextStyle(
+                    color: Color(0xffaeb880),
+                    fontFamily: "BalsamiqSans",
+                  ),
                   hintText: hint,
                   fillColor: Colors.blue,
                   contentPadding:
@@ -37,7 +40,7 @@ class Cicontext extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(32)),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xff393e46), width: 2),
+                    borderSide: BorderSide(color: kcyan, width: 2),
                     borderRadius: BorderRadius.all(Radius.circular(32)),
                   ),
                   focusedBorder: OutlineInputBorder(

@@ -4,6 +4,7 @@ import 'package:grocskart/CustomUI/Cbutton.dart';
 import 'package:grocskart/Customer/CNavigationScreen.dart';
 import 'package:grocskart/Customer/CShopScreen.dart';
 import 'package:grocskart/Customer/CartScreen.dart';
+import 'package:grocskart/constants.dart';
 import 'package:grocskart/utils/database_helper.dart';
 import 'package:grocskart/Customer/CartTracker.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
@@ -63,39 +64,55 @@ class _ItemFocusSceenState extends State<ItemFocusScreen> {
     }
 
     return Scaffold(
+      backgroundColor: klightgreen,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(8.0),
+          padding: EdgeInsets.only(bottom: 5),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Container(
+                color: kgrey,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 5),
+                  child: Image.network(
+                    widget.image,
+                    height: 250,
+                    width: double.infinity,
+                  ),
+                ),
+              ),
               Padding(
-                padding: EdgeInsets.symmetric(vertical: 5),
-                child: Image.network(
-                  widget.image,
-                  height: 250,
-                  width: double.infinity,
+                padding: EdgeInsets.only(left: 5),
+                child: Text(
+                  widget.name,
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontFamily: "BalsamiqSans",
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              Text(
-                widget.name,
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
+              Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: Text(
+                  "₹ ${widget.price}",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontFamily: "BalsamiqSans",
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              Text(
-                "₹ ${widget.price}",
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Text(
-                widget.desc,
-                style: TextStyle(
-                  fontSize: 18,
+              Padding(
+                padding: EdgeInsets.only(left: 5),
+                child: Text(
+                  widget.desc,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontFamily: "BalsamiqSans",
+                  ),
                 ),
               ),
               Card(
@@ -192,7 +209,7 @@ class _ItemFocusSceenState extends State<ItemFocusScreen> {
                 children: <Widget>[
                   Expanded(
                     child: cButton(
-                      text: "Remove from cart",
+                      text: "Remove Item",
                       onPressed: () {
                         CartTraker item = CartTraker(
                             id: widget.pid,
@@ -209,7 +226,7 @@ class _ItemFocusSceenState extends State<ItemFocusScreen> {
                   ),
                   Expanded(
                     child: cButton(
-                      text: "Add to Cart",
+                      text: "Add Item",
                       onPressed: () {
                         CartTraker item = CartTraker(
                             id: widget.pid,

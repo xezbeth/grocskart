@@ -29,7 +29,7 @@ class cSearchBar extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(32)),
           ),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Color(0xff393e46), width: 2),
+            borderSide: BorderSide(color: kcyan, width: 2),
             borderRadius: BorderRadius.all(Radius.circular(32)),
           ),
           focusedBorder: OutlineInputBorder(

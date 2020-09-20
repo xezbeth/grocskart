@@ -21,7 +21,10 @@ class QTextField extends StatelessWidget {
             height: 1,
           ),
           decoration: InputDecoration(
-            hintStyle: TextStyle(color: Color(0xffaeb880)),
+            hintStyle: TextStyle(
+              color: Color(0xffaeb880),
+              fontFamily: "BalsamiqSans",
+            ),
             hintText: hint,
             fillColor: Colors.blue,
             contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
@@ -29,7 +32,7 @@ class QTextField extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(32)),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Color(0xff393e46), width: 2),
+              borderSide: BorderSide(color: kcyan, width: 2),
               borderRadius: BorderRadius.all(Radius.circular(32)),
             ),
             focusedBorder: OutlineInputBorder(

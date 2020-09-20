@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocskart/constants.dart';
 import 'CShopScreen.dart';
 import 'CartScreen.dart';
 import 'CProfileScreen.dart';
@@ -23,6 +24,7 @@ class _CNavigationScreenState extends State<CNavigationScreen> {
     return Scaffold(
       body: _myPages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: kprimary,
         onTap: (value) {
           setState(() {
             _currentIndex = value;

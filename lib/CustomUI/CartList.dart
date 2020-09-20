@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:grocskart/CustomUI/Cbutton.dart';
 import 'package:grocskart/Customer/ItemFocusScreen.dart';
+import 'package:grocskart/constants.dart';
 
 class CartList extends StatelessWidget {
   CartList({this.image, this.price, this.name, this.quantity, this.onPressed});
@@ -16,7 +18,7 @@ class CartList extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Card(
-        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         elevation: 8,
         child: Row(
           children: <Widget>[
@@ -40,6 +42,8 @@ class CartList extends StatelessWidget {
                       name,
                       style: TextStyle(
                         fontSize: 26,
+                        fontFamily: "BalsamiqSans",
+                        color: kdarkText,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -52,6 +56,7 @@ class CartList extends StatelessWidget {
                         child: Text(
                           "qty : $quantity",
                           style: TextStyle(
+                            fontFamily: "BalsamiqSans",
                             fontSize: 16,
                           ),
                         ),
@@ -61,6 +66,7 @@ class CartList extends StatelessWidget {
                         child: Text(
                           "₹ $finalPrice",
                           style: TextStyle(
+                            fontFamily: "BalsamiqSans",
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),

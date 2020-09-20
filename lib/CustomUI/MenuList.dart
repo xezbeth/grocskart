@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocskart/constants.dart';
 
 class MenuList extends StatelessWidget {
   MenuList(
@@ -45,6 +46,8 @@ class MenuList extends StatelessWidget {
                       name,
                       style: TextStyle(
                         fontSize: 26,
+                        fontFamily: "BalsamiqSans",
+                        color: kdarkText,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -54,6 +57,7 @@ class MenuList extends StatelessWidget {
                     child: Text(
                       "qty : $quantity",
                       style: TextStyle(
+                        fontFamily: "BalsamiqSans",
                         fontSize: 18,
                       ),
                     ),
@@ -66,6 +70,7 @@ class MenuList extends StatelessWidget {
                         child: Text(
                           "discount : $discount%",
                           style: TextStyle(
+                            fontFamily: "BalsamiqSans",
                             fontSize: 18,
                           ),
                         ),
@@ -75,6 +80,7 @@ class MenuList extends StatelessWidget {
                         child: Text(
                           "₹ $price",
                           style: TextStyle(
+                            fontFamily: "BalsamiqSans",
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
