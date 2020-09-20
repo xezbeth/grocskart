@@ -20,16 +20,23 @@ class _CShopScreenState extends State<CItemScreen> {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   ScrollController _scrollController = ScrollController();
-  int _currentMax = 0;
+  int _currentMax = 0, limit = 14, listViewLimit = 7;
 
   Future shopFuture;
 
   String keyword, shopName, shopID;
-  bool canFilter = true;
+  bool canFilter = true, canRefresh = true, anyDataLeft = true;
   //int price, discount;
   //double distance;
   List<Widget> listShops = [], listItems = [];
-  var im;
+  var im, timestamp;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _scrollController.dispose();
+  }
 
   @override
   void initState() {
@@ -38,28 +45,63 @@ class _CShopScreenState extends State<CItemScreen> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        _getMoreData();
+        _getMoreData(false);
       }
     });
   }
 
-  _getMoreData() {
-    for (int i = _currentMax; i < (_currentMax + 5); i++) {
+  Widget getSpinner() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30, top: 10),
+      child: SpinKitWanderingCubes(
+        color: kdark,
+        size: 50,
+      ),
+    );
+  }
+
+  void _updateData() {
+    for (int i = _currentMax; i < (_currentMax + listViewLimit); i++) {
       if (i < listShops.length) {
         listItems.add(listShops[i]);
       }
     }
 
-    _currentMax += 5;
+    print("item length: ${listItems.length}");
+    print("shop length: ${listShops.length}");
+    print("current max: $_currentMax");
+
+    _currentMax += listViewLimit;
 
     setState(() {});
   }
 
-  Future getShopItem(String searchKeyWord) async {
+  _getMoreData(bool isInit) {
+    if (!isInit) {
+      print(timestamp);
+      if (canRefresh) {
+        canRefresh = false;
+        _updateData();
+        //getShopItem(null, true);
+      } else {
+        canRefresh = true;
+        getShopItem(null, true);
+      }
+    } else {
+      _updateData();
+    }
+  }
+
+  Future getShopItem(String searchKeyWord, bool moreData) async {
     print(shopName);
-    listShops = [];
-    listItems = [];
-    _currentMax = 0;
+    if (moreData) {
+    } else {
+      listItems = [];
+      listShops = [];
+      _currentMax = 0;
+      timestamp = null;
+    }
+
     var message;
     if (shopID == null) {
       var data = await firestore
@@ -73,12 +115,14 @@ class _CShopScreenState extends State<CItemScreen> {
       }
     }
 
-    if (searchKeyWord == null) {
+    if (searchKeyWord == null || searchKeyWord == '') {
       message = await firestore
           .collection('shops')
           .doc(shopID)
           .collection('items')
-          .limit(5)
+          .orderBy('timestamp', descending: false)
+          .where('timestamp', isGreaterThan: timestamp)
+          .limit(limit)
           .get();
     } else {
       message = await firestore
@@ -86,10 +130,16 @@ class _CShopScreenState extends State<CItemScreen> {
           .doc(shopID)
           .collection('items')
           .where("name", isEqualTo: searchKeyWord)
+          .where('timestamp', isGreaterThan: timestamp)
+          .limit(limit)
           .get();
     }
+    if (message == null) {
+      anyDataLeft = false;
+    }
     for (var attribute in message.docs) {
-      //print(attribute.data());
+      timestamp = attribute.data()['timestamp'];
+      print(attribute.data()['timestamp']);
       im = await FirebaseStorage.instance
           .ref()
           .child('$shopName/${attribute.data()["image"]}.jpg')
@@ -118,7 +168,12 @@ class _CShopScreenState extends State<CItemScreen> {
         ),
       );
     }
-    _getMoreData();
+
+    if (!moreData) {
+      _getMoreData(true);
+    } else {
+      _updateData();
+    }
     return listShops;
   }
 
@@ -131,7 +186,7 @@ class _CShopScreenState extends State<CItemScreen> {
     }
     if (canFilter) {
       canFilter = false;
-      shopFuture = getShopItem(null);
+      shopFuture = getShopItem(null, false);
     }
 
     return Container(
@@ -165,7 +220,9 @@ class _CShopScreenState extends State<CItemScreen> {
                           onPressed: () {
                             setState(() {
                               listShops = [];
-                              shopFuture = getShopItem(keyword);
+                              shopFuture = getShopItem(keyword, false);
+                              //var d = FieldValue.serverTimestamp();
+                              //print();
                               //shopFuture = getShopItem(null);
                             });
                           }),
@@ -222,25 +279,22 @@ class _CShopScreenState extends State<CItemScreen> {
                           itemBuilder: (BuildContext context, int index) {
                             if (index == listItems.length) {
                               if (index >= listShops.length) {
-                                return Center(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text("No More Items"),
-                                  ),
-                                );
+                                if (anyDataLeft) {
+                                  return getSpinner();
+                                } else {
+                                  return Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("No More Items"),
+                                    ),
+                                  );
+                                }
                               } else {
-                                return Padding(
-                                  padding: const EdgeInsets.only(
-                                      bottom: 30, top: 10),
-                                  child: SpinKitWanderingCubes(
-                                    color: kdark,
-                                    size: 50,
-                                  ),
-                                );
+                                return getSpinner();
                               }
                             }
                             return LazyLoadingList(
-                              initialSizeOfItems: 5,
+                              initialSizeOfItems: listViewLimit,
                               index: index,
                               child: listItems[index],
                               loadMore: () => print('Loading More'),

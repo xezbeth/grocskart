@@ -10,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:grocskart/CustomUI/Cbutton.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 
 class SProfileScreen extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class SProfileScreen extends StatefulWidget {
 
 class _SProfileScreenState extends State<SProfileScreen> {
   final _firestore = FirebaseFirestore.instance;
-  String shopName, shopDesc, shopID;
+  String shopName, shopDesc, shopID, ownerName, contactNo;
   File _image;
   Position position;
 
@@ -37,7 +38,7 @@ class _SProfileScreenState extends State<SProfileScreen> {
     });
   }
 
-  Future<String> getItem(String searchKeyWord) async {
+  Future updateLocation(String searchKeyWord) async {
     var data = await _firestore
         .collection('shops')
         .where("name", isEqualTo: searchKeyWord)
@@ -59,6 +60,73 @@ class _SProfileScreenState extends State<SProfileScreen> {
       'latitude': position.latitude,
       'longitude': position.longitude,
     });
+  }
+
+  void updateInformation() async {
+    if (_image != null) {
+      var imageLink = saveImage(_image, shopName);
+    }
+
+    var message = await _firestore
+        .collection("shops")
+        .where("name", isEqualTo: shopName)
+        .get();
+
+    if (message == null) {
+      if (shopName != null &&
+          shopDesc != null &&
+          _image != null &&
+          position != null &&
+          ownerName != null &&
+          contactNo != null) {
+        _firestore.collection('shops').add({
+          'image': shopName,
+          'name': shopName,
+          'desc': shopDesc,
+          'latitude': position.latitude,
+          'longitude': position.longitude,
+          'ownername': ownerName,
+          'contactno': contactNo
+        }).whenComplete(() {
+          SuccessAlertBox(
+              context: context,
+              title: "Success",
+              messageText: "Created shop.You can now add items to the shop.");
+        }).catchError((error) {
+          DangerAlertBox(
+              context: context,
+              title: "Error",
+              messageText: "An error occured.Shop not created");
+        });
+      } else {
+        InfoAlertBox(
+            context: context,
+            title: "Empty Fields",
+            infoMessage:
+                "Some Fields are empty.Fill all fields to save changes to shop");
+      }
+    } else {
+      _firestore.collection('shops').doc(message.docs[0].id).update({
+        // 'image': shopName,
+        // 'name': shopName,
+        //'desc': shopDesc,
+        // 'latitude': position.latitude,
+        //'longitude': position.longitude,
+        'ownername': ownerName,
+        'contactno': contactNo
+      }).whenComplete(() {
+        SuccessAlertBox(
+            context: context, title: "Success", messageText: "Saved changes");
+      }).catchError((error) {
+        DangerAlertBox(
+            context: context,
+            title: "Error",
+            messageText: "An error occured.Changes not saved");
+      });
+      print("shop already exists");
+      print(shopName);
+      //getItem(shopName);
+    }
   }
 
   Future<String> saveImage(File image, String imageName) async {
@@ -175,41 +243,49 @@ class _SProfileScreenState extends State<SProfileScreen> {
                       shopDesc = value;
                     },
                   ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.my_location,
-                      color: kcyan,
-                      size: 40,
-                    ),
-                    onPressed: () {
-                      getLocation();
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Get Location : ",
+                        style: TextStyle(
+                          fontFamily: "BalsamiqSans",
+                        ),
+                      ),
+                      IconButton(
+                        iconSize: 40,
+                        icon: Icon(
+                          Icons.my_location,
+                          color: kcyan,
+                          size: 40,
+                        ),
+                        onPressed: () {
+                          getLocation();
+                        },
+                      ),
+                    ],
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 20),
+                    color: Colors.red,
+                    height: 3,
+                  ),
+                  Ctextfield(
+                    hint: "Name of Owner",
+                    onChanged: (value) {
+                      ownerName = value;
+                    },
+                  ),
+                  Ctextfield(
+                    hint: "Contact No.",
+                    onChanged: (value) {
+                      contactNo = value;
                     },
                   ),
                   cButton(
                     text: "Save Changes",
-                    onPressed: () async {
-                      if (_image != null) {
-                        var imageLink = saveImage(_image, shopName);
-                      }
-
-                      var message = await _firestore
-                          .collection("shops")
-                          .where("name", isEqualTo: shopName)
-                          .get();
-
-                      if (message == null) {
-                        _firestore.collection('shops').add({
-                          'image': shopName,
-                          'name': shopName,
-                          'desc': shopDesc,
-                          'latitude': position.latitude,
-                          'longitude': position.longitude,
-                        }).whenComplete(() {});
-                      } else {
-                        print("shop already exists");
-                        print(shopName);
-                        getItem(shopName);
-                      }
+                    onPressed: () {
+                      updateInformation();
                     },
                   ),
                 ],

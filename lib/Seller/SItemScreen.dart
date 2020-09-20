@@ -21,38 +21,67 @@ class _SItemScreenState extends State<SItemScreen> {
   List<Widget> menuList = [], itemList = [];
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   ScrollController _scrollController = ScrollController();
-  var im;
-  int _currentMax = 0;
+  var im, timestamp;
+  bool canRefresh = true;
+  int _currentMax = 0, limit = 14, listViewLimit = 7;
 
-  _getMoreData() {
-    for (int i = _currentMax; i < (_currentMax + 5); i++) {
+  void _updateData() {
+    for (int i = _currentMax; i < (_currentMax + listViewLimit); i++) {
       if (i < menuList.length) {
         itemList.add(menuList[i]);
       }
     }
 
-    _currentMax += 5;
+    _currentMax += listViewLimit;
 
     setState(() {});
   }
 
-  Future getMenuItem(String searchKeyWord) async {
-    menuList = [];
-    itemList = [];
-    _currentMax = 0;
+  _getMoreData(bool isInit) {
+    if (!isInit) {
+      print(timestamp);
+      if (canRefresh) {
+        canRefresh = false;
+        _updateData();
+        //getShopItem(null, true);
+      } else {
+        canRefresh = true;
+        getMenuItem(null, true);
+      }
+    } else {
+      _updateData();
+    }
+  }
+
+  Future getMenuItem(String searchKeyWord, bool moreData) async {
+    if (moreData) {
+    } else {
+      menuList = [];
+      itemList = [];
+      _currentMax = 0;
+      timestamp = null;
+    }
     var message;
 
     if (searchKeyWord == null || searchKeyWord == "") {
-      message = await firestore.collection('shops/$name/items/').get();
+      message = await firestore
+          .collection('shops/$name/items/')
+          .orderBy('timestamp', descending: false)
+          .where('timestamp', isGreaterThan: timestamp)
+          .limit(limit)
+          .get();
     } else {
       message = await firestore
           .collection('shops/$name/items/')
           .where("name", isEqualTo: searchKeyWord)
+          .where('timestamp', isGreaterThan: timestamp)
+          .limit(limit)
           .get();
     }
 
     for (var attribute in message.docs) {
       // print(attribute.data());
+      timestamp = attribute.data()['timestamp'];
       im = await FirebaseStorage.instance
           .ref()
           .child('shop1/${attribute.data()["image"]}.jpg')
@@ -82,7 +111,12 @@ class _SItemScreenState extends State<SItemScreen> {
         ),
       );
     }
-    _getMoreData();
+
+    if (!moreData) {
+      _getMoreData(true);
+    } else {
+      _updateData();
+    }
     return menuList;
   }
 
@@ -94,11 +128,11 @@ class _SItemScreenState extends State<SItemScreen> {
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        _getMoreData();
+        _getMoreData(false);
       }
     });
 
-    menuFuture = getMenuItem(null);
+    menuFuture = getMenuItem(null, false);
   }
 
   @override
@@ -128,7 +162,7 @@ class _SItemScreenState extends State<SItemScreen> {
                       icon: Icon(Icons.search),
                       onPressed: () {
                         print(menuList.length);
-                        menuFuture = getMenuItem(keyword);
+                        menuFuture = getMenuItem(keyword, false);
                         setState(() {});
                       }),
                 ),

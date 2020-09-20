@@ -8,6 +8,7 @@ import 'package:grocskart/constants.dart';
 import 'package:grocskart/utils/database_helper.dart';
 import 'package:grocskart/Customer/CartTracker.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 
 class ItemFocusScreen extends StatefulWidget {
   static final String id = "ItemFocusScreen";
@@ -211,16 +212,28 @@ class _ItemFocusSceenState extends State<ItemFocusScreen> {
                     child: cButton(
                       text: "Remove Item",
                       onPressed: () {
-                        CartTraker item = CartTraker(
-                            id: widget.pid,
-                            image: widget.image,
-                            name: widget.name,
-                            desc: widget.desc,
-                            quantity: _quantity,
-                            price: widget.price);
-                        databaseHelper.initializeDatabase();
-                        //databaseHelper.insertToCart(item);
-                        print(databaseHelper.deleteFromCart(item));
+                        DeleteAlertBox(
+                            context: context,
+                            title: "Remove Item",
+                            infoMessage:
+                                "Are you sure you want to remove this item?",
+                            onPressedYes: () {
+                              CartTraker item = CartTraker(
+                                  id: widget.pid,
+                                  image: widget.image,
+                                  name: widget.name,
+                                  desc: widget.desc,
+                                  quantity: _quantity,
+                                  price: widget.price);
+                              databaseHelper.initializeDatabase();
+                              //databaseHelper.insertToCart(item);
+                              print(databaseHelper.deleteFromCart(item));
+                              Navigator.pop(context);
+                              InfoAlertBox(
+                                  context: context,
+                                  title: "Success",
+                                  infoMessage: "Item Removed from cart");
+                            });
                       },
                     ),
                   ),
@@ -238,6 +251,11 @@ class _ItemFocusSceenState extends State<ItemFocusScreen> {
                         databaseHelper.initializeDatabase();
                         //databaseHelper.insertToCart(item);
                         print(databaseHelper.insertToCart(item));
+                        SuccessAlertBox(
+                            context: context,
+                            title: "Success",
+                            messageText: "Item added to cart",
+                            buttonText: "ok");
                       },
                     ),
                   ),

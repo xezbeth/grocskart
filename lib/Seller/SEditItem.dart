@@ -11,6 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 
 class SEditItem extends StatefulWidget {
   static final String id = "SEditItem";
@@ -277,18 +278,39 @@ class _SAddItemState extends State<SEditItem> {
                         child: cButton(
                           text: "delete",
                           onPressed: () {
-                            if (itemID != null) {
-                              _firestore
-                                  .collection('shops/$shopName/items/')
-                                  .doc(itemID)
-                                  .delete();
+                            DeleteAlertBox(
+                              context: context,
+                              title: "Delete item",
+                              infoMessage:
+                                  "Are you sure you want to delete this item?",
+                              onPressedYes: () {
+                                if (itemID != null) {
+                                  _firestore
+                                      .collection('shops/$shopName/items/')
+                                      .doc(itemID)
+                                      .delete()
+                                      .whenComplete(() {
+                                    SuccessAlertBox(
+                                        context: context,
+                                        title: "Success",
+                                        messageText: "Item deleted from shop");
+                                  }).catchError((error) {
+                                    DangerAlertBox(
+                                        context: context,
+                                        title: "Error",
+                                        messageText:
+                                            "An error occured.changes not saved");
+                                  });
 
-                              FirebaseStorage.instance
-                                  .ref()
-                                  .child(shopName)
-                                  .child("$itemName.jpg")
-                                  .delete();
-                            }
+                                  FirebaseStorage.instance
+                                      .ref()
+                                      .child(shopName)
+                                      .child("$itemName.jpg")
+                                      .delete();
+                                }
+                                Navigator.pop(context);
+                              },
+                            );
                           },
                         ),
                       ),
@@ -298,22 +320,43 @@ class _SAddItemState extends State<SEditItem> {
                     text: "push",
                     onPressed: () {
                       //print(data.docs);
-                      print(quantity);
-                      //var imageLink = saveImage(_image.toString());
-                      var imageLink = saveImage(_image, itemName);
-                      print("document id : $itemID");
-                      _firestore
-                          .collection('shops/$shopName/items/')
-                          .doc(itemID)
-                          .update({
-                        'image': itemName,
-                        'name': itemName,
-                        'desc': itemDesc,
-                        'price': int.parse(price),
-                        'discount': int.parse(discount),
-                        'id': id,
-                        'quantity': int.parse(quantity),
-                      });
+                      ConfirmAlertBox(
+                        context: context,
+                        title: "Edit Item",
+                        infoMessage: "Save changes to item?",
+                        onPressedYes: () {
+                          print(quantity);
+                          //var imageLink = saveImage(_image.toString());
+                          var imageLink = saveImage(_image, itemName);
+                          print("document id : $itemID");
+                          _firestore
+                              .collection('shops/$shopName/items/')
+                              .doc(itemID)
+                              .update({
+                            'image': itemName,
+                            'name': itemName,
+                            'desc': itemDesc,
+                            'price': int.parse(price),
+                            'discount': int.parse(discount),
+                            'id': id,
+                            'quantity': int.parse(quantity),
+                            'timestamp': FieldValue.serverTimestamp(),
+                          }).whenComplete(() {
+                            SuccessAlertBox(
+                                context: context,
+                                title: "Success",
+                                messageText: "Saved changes");
+                          }).catchError((error) {
+                            DangerAlertBox(
+                                context: context,
+                                title: "Error",
+                                messageText:
+                                    "An error occured.changes not saved");
+                          });
+                          Navigator.pop(context);
+                        },
+                      );
+
                       // _firestore.collection('shops/$shopName/items/').add({
 
                       //});

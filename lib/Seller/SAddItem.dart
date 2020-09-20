@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 import 'package:grocskart/CustomUI/CinputBox.dart';
 import 'package:grocskart/constants.dart';
 import 'package:grocskart/CustomUI/Clargetext.dart';
@@ -254,20 +255,57 @@ class _SAddItemState extends State<SAddItem> {
                   cButton(
                     text: "push",
                     onPressed: () {
-                      print(price);
-                      print(quantity);
-                      //var imageLink = saveImage(_image.toString());
-                      var imageLink = saveImage(_image, itemName);
-                      _firestore.collection('shops/$shopName/items/').add({
-                        'image': itemName,
-                        'name': itemName,
-                        'desc': itemDesc,
-                        'price': int.parse(price),
-                        'discount': int.parse(discount),
-                        'id':
-                            itemName + (Random().nextInt(999) + 100).toString(),
-                        'quantity': int.parse(quantity),
-                      }).whenComplete(() {});
+                      if (_image != null &&
+                          shopName != null &&
+                          itemName != null &&
+                          itemDesc != null &&
+                          price != null &&
+                          quantity != null) {
+                        ConfirmAlertBox(
+                            context: context,
+                            title: "Add Item",
+                            infoMessage: "Add Item to Shop?",
+                            onPressedYes: () {
+                              print(price);
+                              print(quantity);
+                              //var imageLink = saveImage(_image.toString());
+                              if (discount == null) {
+                                discount = 0 as String;
+                              }
+                              var imageLink = saveImage(_image, itemName);
+                              _firestore
+                                  .collection('shops/$shopName/items/')
+                                  .add({
+                                'image': itemName,
+                                'name': itemName,
+                                'desc': itemDesc,
+                                'price': int.parse(price),
+                                'discount': int.parse(discount),
+                                'id': itemName +
+                                    (Random().nextInt(999) + 100).toString(),
+                                'quantity': int.parse(quantity),
+                                'timestamp': FieldValue.serverTimestamp(),
+                              }).whenComplete(() {
+                                SuccessAlertBox(
+                                    context: context,
+                                    title: "Success",
+                                    messageText: "Item added to shop");
+                              }).catchError((error) {
+                                DangerAlertBox(
+                                    context: context,
+                                    title: "Error",
+                                    messageText:
+                                        "An error occured.Item not added to cart");
+                              });
+                              Navigator.pop(context);
+                            });
+                      } else {
+                        InfoAlertBox(
+                            context: context,
+                            title: "Empty Fields",
+                            infoMessage:
+                                "Some Fields are empty.Fill all fields to add item to shop");
+                      }
                     },
                   ),
                 ],
