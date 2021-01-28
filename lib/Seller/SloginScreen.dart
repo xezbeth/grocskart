@@ -71,6 +71,7 @@ class _SloginScreenState extends State<SloginScreen> {
                       child: Column(
                         children: <Widget>[
                           Ctextfield(
+
                             hint: "Email",
                             onChanged: null,
                             isPassword: false,

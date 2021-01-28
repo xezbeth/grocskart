@@ -70,10 +70,10 @@ class _SAddItemState extends State<SAddItem> {
 
     image = File(appDocPath + "thumb.jpg")
       ..writeAsBytesSync(img.encodeJpg(reduceImage));
-    StorageReference ref =
+    Reference ref =
         FirebaseStorage.instance.ref().child(shopName).child("$imageName.jpg");
-    StorageUploadTask uploadTask = ref.putFile(image);
-    var downloadURL = (await uploadTask.onComplete).ref.getDownloadURL();
+    UploadTask uploadTask = ref.putFile(image);
+    var downloadURL = (await uploadTask).ref.getDownloadURL();
     return await downloadURL;
   }
 

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:grocskart/constants.dart';
-
-class Ctextfield extends StatelessWidget {
-  Ctextfield(
+class CtextFormField extends StatelessWidget
+{
+  CtextFormField(
       {this.hint,
-      this.onChanged,
-      this.isPassword = false,
-      this.keyboardType = TextInputType.text, TextEditingController controller, String Function(String) validator});
+        this.onChanged,
+        this.isPassword = false,
+        this.keyboardType = TextInputType.text, TextEditingController controller, String Function(String) validator});
   final String hint;
   final Function onChanged;
   final bool isPassword;
@@ -15,7 +15,7 @@ class Ctextfield extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-      child: TextField(
+      child: TextFormField(
         keyboardType: keyboardType,
         obscureText: isPassword,
         onChanged: onChanged,
@@ -44,6 +44,3 @@ class Ctextfield extends StatelessWidget {
     );
   }
 }
-
-
-
